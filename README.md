@@ -1,0 +1,2 @@
+# grafana-registry
+grafana-register
