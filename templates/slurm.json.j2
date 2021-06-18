@@ -17,13 +17,12 @@
     "editable": true,
     "gnetId": null,
     "graphTooltip": 0,
-    "id": 32,
     "iteration": 1623330929902,
     "links": [],
     "panels": [
       {
         "collapsed": false,
-        "datasource": "Prometheus-1",
+        "datasource": "Prometheus",
         "gridPos": {
           "h": 1,
           "w": 24,
@@ -37,7 +36,7 @@
       },
       {
         "columns": [],
-        "datasource": "Prometheus-1",
+        "datasource": "Prometheus",
         "description": "Job information of the jobs selected for monitoring.",
         "fieldConfig": {
           "defaults": {
@@ -495,7 +494,7 @@
       },
       {
         "columns": [],
-        "datasource": "Prometheus-1",
+        "datasource": "Prometheus",
         "description": "Partition information.",
         "fieldConfig": {
           "defaults": {
@@ -745,7 +744,7 @@
       },
       {
         "collapsed": false,
-        "datasource": "Prometheus-1",
+        "datasource": "Prometheus",
         "gridPos": {
           "h": 1,
           "w": 24,
@@ -762,7 +761,7 @@
         "bars": false,
         "dashLength": 10,
         "dashes": false,
-        "datasource": "Prometheus-1",
+        "datasource": "Prometheus",
         "description": "",
         "fieldConfig": {
           "defaults": {
@@ -862,7 +861,7 @@
         "bars": false,
         "dashLength": 10,
         "dashes": false,
-        "datasource": "Prometheus-1",
+        "datasource": "Prometheus",
         "fieldConfig": {
           "defaults": {
             "custom": {}
@@ -971,7 +970,7 @@
         "bars": false,
         "dashLength": 10,
         "dashes": false,
-        "datasource": "Prometheus-1",
+        "datasource": "Prometheus",
         "fieldConfig": {
           "defaults": {
             "custom": {}
@@ -1062,7 +1061,7 @@
         }
       },
       {
-        "datasource": "Prometheus-1",
+        "datasource": "Prometheus",
         "description": "",
         "fieldConfig": {
           "defaults": {
@@ -1129,7 +1128,7 @@
       },
       {
         "collapsed": false,
-        "datasource": "Prometheus-1",
+        "datasource": "Prometheus",
         "gridPos": {
           "h": 1,
           "w": 24,
@@ -1146,7 +1145,7 @@
         "bars": false,
         "dashLength": 10,
         "dashes": false,
-        "datasource": "Prometheus-1",
+        "datasource": "Prometheus",
         "description": "Availability of the selected partition",
         "fieldConfig": {
           "defaults": {
@@ -1248,7 +1247,7 @@
         "bars": false,
         "dashLength": 10,
         "dashes": false,
-        "datasource": "Prometheus-1",
+        "datasource": "Prometheus",
         "description": "Number of nodes in each state",
         "fieldConfig": {
           "defaults": {
@@ -1365,7 +1364,7 @@
             "text": "grapevine",
             "value": "grapevine"
           },
-          "datasource": "Prometheus-1",
+          "datasource": "Prometheus",
           "definition": "label_values(slurm_partition_availability, deployment_label)",
           "error": null,
           "hide": 2,
@@ -1392,7 +1391,7 @@
             "text": "6008389",
             "value": "6008389"
           },
-          "datasource": "Prometheus-1",
+          "datasource": "Prometheus",
           "definition": "label_values(slurm_job_state{deployment_label=\"{{ deployment_label }}\"}, job_id)",
           "error": null,
           "hide": 0,
@@ -1419,7 +1418,7 @@
             "text": "thinnodes",
             "value": "thinnodes"
           },
-          "datasource": "Prometheus-1",
+          "datasource": "Prometheus",
           "definition": "label_values(slurm_partition_availability{deployment_label=\"{{ deployment_label }}\"},partition)",
           "error": null,
           "hide": 0,
@@ -1469,9 +1468,8 @@
       ]
     },
     "timezone": "",
-    "title": "SODALITE-SLURM-EXPORTERS-{{ deployment_label }}",
-    "version": 10
+    "title": "SODALITE-SLURM-EXPORTERS-{{ deployment_label }}"
   },
-  "dashboard.uid": null,
+  "dashboard.uid": {{ dashboard_uid }},
   "overwrite": true
 }

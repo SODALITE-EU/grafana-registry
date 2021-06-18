@@ -1,4 +1,4 @@
 flask>=1.1.2
 gunicorn>=20.0.4
 requests~=2.25.1
-Jinja2~=3.0.1
+Jinja2==2.10.3

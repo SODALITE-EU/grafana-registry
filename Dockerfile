@@ -13,4 +13,6 @@ RUN pip3 install -r requirements.txt
 
 COPY ./app.py /app
 
+COPY ./templates/* /app/templates
+
 CMD [ "sh", "-c", "gunicorn -w ${GUNICORN_WORKERS} -b :${GRAFANA_REGISTRY_PORT} app:app" ]
