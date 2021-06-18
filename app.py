@@ -1,5 +1,7 @@
-from flask import Flask, request, abort, jsonify
-from requests import post, auth
+import os
+
+from flask import Flask, request
+from requests import post
 from requests.auth import HTTPBasicAuth as basicAuth
 from jinja2 import Environment, PackageLoader, select_autoescape
 
@@ -27,7 +29,8 @@ def create_dashboards():
         template = env.get_template(template_file)
 
         # Create of the dashboard with a dummy dashboard uid
-        dashboard = template.render(deployment_label=deployment_label, dashboard_uid="0000")
+        dashboard = template.render(deployment_label=deployment_label,
+                                    dashboard_url="/")
         r = post(gf_endpoint + '/api/dashboards/db',
                  auth=basicAuth(gf_admin_user, gf_admin_pw),
                  json=dashboard)
@@ -39,8 +42,9 @@ def create_dashboards():
         dashboard_uids[deployment_label] = {dashboard_type: dashboard_uid}
         dashboard_ids[deployment_label] = {dashboard_type: dashboard_id}
 
-        # Update the dashboard to include the dashboard uid in the links
-        dashboard = template.render(deployment_label=deployment_label, dashboard_uid=dashboard_uid)
+        # Update the dashboard to include the dashboard url in the links
+        dashboard = template.render(deployment_label=deployment_label,
+                                    dashboard_url=dashboard_url)
         post(gf_endpoint + '/api/dashboards/db',
              auth=basicAuth(gf_admin_user, gf_admin_pw),
              json=dashboard)

@@ -13,16 +13,17 @@
         }
       ]
     },
-    "description": "Dashboard for the prometheus hpc exporters [PBS]",
+    "description": "Dashboard for the prometheus hpc exporters [SLURM]",
     "editable": true,
     "gnetId": null,
     "graphTooltip": 0,
-    "iteration": 1623340738734,
+    "id": 32,
+    "iteration": 1623330929902,
     "links": [],
     "panels": [
       {
         "collapsed": false,
-        "datasource": "Prometheus",
+        "datasource": "Prometheus-1",
         "gridPos": {
           "h": 1,
           "w": 24,
@@ -31,12 +32,12 @@
         },
         "id": 187,
         "panels": [],
-        "title": "Global info (associated deployment)，Deployment： deployment",
+        "title": "Global info (associated deployment)，Deployment：{{ deployment_label }}",
         "type": "row"
       },
       {
         "columns": [],
-        "datasource": "Prometheus",
+        "datasource": "Prometheus-1",
         "description": "Job information of the jobs selected for monitoring.",
         "fieldConfig": {
           "defaults": {
@@ -55,12 +56,11 @@
         "pageSize": null,
         "showHeader": true,
         "sort": {
-          "col": null,
-          "desc": false
+          "col": 10,
+          "desc": true
         },
         "styles": [
           {
-            "$$hashKey": "object:143",
             "alias": "HPC",
             "align": "auto",
             "colorMode": null,
@@ -79,7 +79,6 @@
             "unit": "bytes"
           },
           {
-            "$$hashKey": "object:144",
             "alias": "Job ID (click for details)",
             "align": "auto",
             "colorMode": null,
@@ -93,7 +92,7 @@
             "link": true,
             "linkTargetBlank": false,
             "linkTooltip": "View job timeseries",
-            "linkUrl": "{{ dashboard_url }}?orgId=1&var-job_id=${__cell}&var-queue=${queue}",
+            "linkUrl": "{{ dashboard_url }}?orgId=1&var-job_id=${__cell}&var-partition=${partition}",
             "mappingType": 1,
             "pattern": "job_id",
             "thresholds": [],
@@ -101,7 +100,6 @@
             "unit": "bytes"
           },
           {
-            "$$hashKey": "object:145",
             "alias": "Job Name",
             "align": "auto",
             "colorMode": null,
@@ -120,8 +118,7 @@
             "unit": "bytes"
           },
           {
-            "$$hashKey": "object:146",
-            "alias": "Queue",
+            "alias": "Partition",
             "align": "auto",
             "colorMode": null,
             "colors": [
@@ -133,13 +130,12 @@
             "decimals": 0,
             "link": false,
             "mappingType": 1,
-            "pattern": "job_queue",
+            "pattern": "job_partition",
             "thresholds": [],
             "type": "string",
             "unit": "bytes"
           },
           {
-            "$$hashKey": "object:147",
             "alias": "#CPUs",
             "align": "auto",
             "colorMode": null,
@@ -158,7 +154,6 @@
             "unit": "short"
           },
           {
-            "$$hashKey": "object:148",
             "alias": "State",
             "align": "center",
             "colorMode": "cell",
@@ -173,74 +168,111 @@
             "mappingType": 1,
             "pattern": "Value #B",
             "thresholds": [
-              "4"
+              "6",
+              "13"
             ],
             "type": "string",
             "unit": "bytes",
             "valueMaps": [
               {
-                "$$hashKey": "object:384",
                 "text": "COMPLETED",
                 "value": "0"
               },
               {
-                "$$hashKey": "object:432",
-                "text": "EXITING",
+                "text": "COMPLETING",
                 "value": "1"
               },
               {
-                "$$hashKey": "object:434",
-                "text": "RUNNING",
+                "text": "STAGE OUT",
                 "value": "2"
               },
               {
-                "$$hashKey": "object:436",
-                "text": "QUEUED",
+                "text": "RUNNING",
                 "value": "3"
               },
               {
-                "$$hashKey": "object:438",
-                "text": "WAITING",
+                "text": "CONFIGURING",
                 "value": "4"
               },
               {
-                "$$hashKey": "object:440",
-                "text": "HELD",
+                "text": "PENDING",
                 "value": "5"
               },
               {
-                "$$hashKey": "object:442",
-                "text": "MOVING",
+                "text": "REQUEUED",
                 "value": "6"
               },
               {
-                "$$hashKey": "object:444",
-                "text": "SUSPENDED",
+                "text": "REQUEUE_FED",
                 "value": "7"
+              },
+              {
+                "text": "RESIZING",
+                "value": "8"
+              },
+              {
+                "text": "RESV DEL HOLD",
+                "value": "9"
+              },
+              {
+                "text": "REQUEUE_HOLD",
+                "value": "10"
+              },
+              {
+                "text": "SIGNALING",
+                "value": "11"
+              },
+              {
+                "text": "SUSPENDED",
+                "value": "12"
+              },
+              {
+                "text": "STOPPED",
+                "value": "13"
+              },
+              {
+                "text": "PREEMPTED",
+                "value": "14"
+              },
+              {
+                "text": "REVOKED",
+                "value": "15"
+              },
+              {
+                "text": "SPECIAL EXIT",
+                "value": "16"
+              },
+              {
+                "text": "DEADLINE",
+                "value": "17"
+              },
+              {
+                "text": "TIMEOUT",
+                "value": "18"
+              },
+              {
+                "text": "OUT OF MEMORY",
+                "value": "19"
+              },
+              {
+                "text": "BOOT FAIL",
+                "value": "20"
+              },
+              {
+                "text": "NODE FAIL",
+                "value": "21"
+              },
+              {
+                "text": "FAILED",
+                "value": "22"
+              },
+              {
+                "text": "CANCELLED",
+                "value": "23"
               }
             ]
           },
           {
-            "$$hashKey": "object:149",
-            "alias": "Priority",
-            "align": "center",
-            "colorMode": "cell",
-            "colors": [
-              "rgba(50, 172, 45, 0.97)",
-              "rgba(237, 129, 40, 0.89)",
-              "rgba(245, 54, 54, 0.9)"
-            ],
-            "dateFormat": "YYYY-MM-DD HH:mm:ss",
-            "decimals": 0,
-            "link": false,
-            "mappingType": 1,
-            "pattern": "Value #C",
-            "thresholds": [],
-            "type": "string",
-            "unit": "bytes"
-          },
-          {
-            "$$hashKey": "object:150",
             "alias": "Walltime Used",
             "align": "center",
             "colorMode": "cell",
@@ -256,33 +288,10 @@
             "pattern": "Value #D",
             "thresholds": [],
             "type": "number",
-            "unit": "dtdhms"
+            "unit": "s"
           },
           {
-            "$$hashKey": "object:151",
-            "alias": "%Walltime Used",
-            "align": "center",
-            "colorMode": "cell",
-            "colors": [
-              "rgba(50, 172, 45, 0.97)",
-              "#E0B400",
-              "rgba(245, 54, 54, 0.9)"
-            ],
-            "dateFormat": "YYYY-MM-DD HH:mm:ss",
-            "decimals": 0,
-            "link": false,
-            "mappingType": 1,
-            "pattern": "Value #E",
-            "thresholds": [
-              "70",
-              "90"
-            ],
-            "type": "number",
-            "unit": "percent"
-          },
-          {
-            "$$hashKey": "object:152",
-            "alias": "Time in queue",
+            "alias": "Time queued",
             "align": "center",
             "colorMode": "cell",
             "colors": [
@@ -297,10 +306,9 @@
             "pattern": "Value #F",
             "thresholds": [],
             "type": "number",
-            "unit": "dtdhms"
+            "unit": "s"
           },
           {
-            "$$hashKey": "object:153",
             "alias": "VMEM used",
             "align": "center",
             "colorMode": "cell",
@@ -319,7 +327,6 @@
             "unit": "bytes"
           },
           {
-            "$$hashKey": "object:154",
             "alias": "PMEM used",
             "align": "center",
             "colorMode": "cell",
@@ -338,7 +345,6 @@
             "unit": "bytes"
           },
           {
-            "$$hashKey": "object:155",
             "alias": "Exit code",
             "align": "center",
             "colorMode": "cell",
@@ -360,14 +366,38 @@
             "unit": "bytes",
             "valueMaps": [
               {
-                "$$hashKey": "object:396",
                 "text": "NOT FINISHED",
                 "value": "-50"
               }
             ]
           },
           {
-            "$$hashKey": "object:156",
+            "alias": "Exit signal",
+            "align": "center",
+            "colorMode": "cell",
+            "colors": [
+              "rgba(0, 0, 0, 0.97)",
+              "rgba(50, 172, 45, 0.97)",
+              "rgba(245, 54, 54, 0.9)"
+            ],
+            "dateFormat": "YYYY-MM-DD HH:mm:ss",
+            "decimals": 0,
+            "link": false,
+            "mappingType": 1,
+            "pattern": "Value #J",
+            "thresholds": [
+              "-49"
+            ],
+            "type": "string",
+            "unit": "bytes",
+            "valueMaps": [
+              {
+                "text": "NOT FINISHED",
+                "value": "-50"
+              }
+            ]
+          },
+          {
             "alias": "",
             "align": "right",
             "colorMode": null,
@@ -385,7 +415,7 @@
         ],
         "targets": [
           {
-            "expr": "pbs_job_cpu_n{deployment_label=\"{{ deployment_label }}\"}-0",
+            "expr": "slurm_job_cpu_n{deployment_label=\"{{ deployment_label }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -394,7 +424,7 @@
             "refId": "A"
           },
           {
-            "expr": "pbs_job_state{deployment_label=\"{{ deployment_label }}\"}-0",
+            "expr": "slurm_job_state{deployment_label=\"{{ deployment_label }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -403,16 +433,7 @@
             "refId": "B"
           },
           {
-            "expr": "pbs_job_priority{deployment_label=\"{{ deployment_label }}\"}-0",
-            "format": "table",
-            "hide": false,
-            "instant": true,
-            "interval": "",
-            "legendFormat": "priority",
-            "refId": "C"
-          },
-          {
-            "expr": "pbs_job_walltime_used{deployment_label=\"{{ deployment_label }}\"}-0",
+            "expr": "slurm_job_walltime_used{deployment_label=\"{{ deployment_label }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -421,16 +442,7 @@
             "refId": "D"
           },
           {
-            "expr": "pbs_job_walltime_used{deployment_label=\"{{ deployment_label }}\"}*100/pbs_job_walltime_max{deployment_label=\"{{ deployment_label }}\"}-0",
-            "format": "table",
-            "hide": false,
-            "instant": true,
-            "interval": "",
-            "legendFormat": "% walltime used",
-            "refId": "E"
-          },
-          {
-            "expr": "pbs_job_time_queued{deployment_label=\"{{ deployment_label }}\"}-0",
+            "expr": "slurm_job_queued{deployment_label=\"{{ deployment_label }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -439,43 +451,52 @@
             "refId": "F"
           },
           {
-            "expr": "pbs_job_mem_virtual{deployment_label=\"{{ deployment_label }}\"}-0",
+            "expr": "slurm_job_memory_virtual_max{deployment_label=\"{{ deployment_label }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
             "interval": "",
-            "legendFormat": "vmem",
+            "legendFormat": "vmem max",
             "refId": "G"
           },
           {
-            "expr": "pbs_job_memory_physical{deployment_label=\"{{ deployment_label }}\"}-0",
+            "expr": "slurm_job_memory_physical_max{deployment_label=\"{{ deployment_label }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
             "interval": "",
-            "legendFormat": "pmem",
+            "legendFormat": "pmem max",
             "refId": "H"
           },
           {
-            "expr": "pbs_job_exit_status{deployment_label=\"{{ deployment_label }}\"}-0",
+            "expr": "slurm_job_exit_code{deployment_label=\"{{ deployment_label }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
             "interval": "",
-            "legendFormat": "exit",
+            "legendFormat": "exit status",
             "refId": "I"
+          },
+          {
+            "expr": "slurm_job_exit_signal{deployment_label=\"{{ deployment_label }}\"}-0",
+            "format": "table",
+            "hide": false,
+            "instant": true,
+            "interval": "",
+            "legendFormat": "exit signal",
+            "refId": "J"
           }
         ],
         "timeFrom": null,
         "timeShift": null,
-        "title": "Job information【Deployment：deployment】",
+        "title": "Job information【Deployment：{{ deployment_label }}】",
         "transform": "table",
         "type": "table-old"
       },
       {
         "columns": [],
-        "datasource": "Prometheus",
-        "description": "Queue information.",
+        "datasource": "Prometheus-1",
+        "description": "Partition information.",
         "fieldConfig": {
           "defaults": {
             "custom": {}
@@ -498,7 +519,6 @@
         },
         "styles": [
           {
-            "$$hashKey": "object:130",
             "alias": "HPC",
             "align": "auto",
             "colorMode": null,
@@ -517,8 +537,7 @@
             "unit": "bytes"
           },
           {
-            "$$hashKey": "object:131",
-            "alias": "Queue",
+            "alias": "Partition",
             "align": "auto",
             "colorMode": null,
             "colors": [
@@ -531,40 +550,20 @@
             "link": true,
             "linkTargetBlank": false,
             "linkTooltip": "View job timeseries",
-            "linkUrl": "{{ dashboard_url }}?orgId=1&var-job_id=${job_id}&var-queue=${__cell}",
+            "linkUrl": "{{ dashboard_url }}?orgId=1&var-job_id=${job_id}&var-partition=${__cell}",
             "mappingType": 1,
-            "pattern": "queue_name",
+            "pattern": "partition",
             "thresholds": [],
             "type": "string",
             "unit": "bytes"
           },
           {
-            "$$hashKey": "object:132",
-            "alias": "Queue type",
-            "align": "center",
-            "colorMode": null,
-            "colors": [
-              "rgba(245, 54, 54, 0.9)",
-              "rgba(237, 129, 40, 0.89)",
-              "rgba(50, 172, 45, 0.97)"
-            ],
-            "dateFormat": "YYYY-MM-DD HH:mm:ss",
-            "decimals": 0,
-            "link": false,
-            "mappingType": 1,
-            "pattern": "queue_type",
-            "thresholds": [],
-            "type": "string",
-            "unit": "bytes"
-          },
-          {
-            "$$hashKey": "object:133",
-            "alias": "Enabled",
+            "alias": "Availability",
             "align": "center",
             "colorMode": "cell",
             "colors": [
-              "rgba(245, 54, 54, 0.9)",
               "#56A64B",
+              "rgba(245, 54, 54, 0.9)",
               "#FADE2A"
             ],
             "dateFormat": "YYYY-MM-DD HH:mm:ss",
@@ -580,60 +579,49 @@
             "unit": "bytes",
             "valueMaps": [
               {
-                "$$hashKey": "object:391",
-                "text": "YES",
+                "text": "UP",
+                "value": "0"
+              },
+              {
+                "text": "DOWN",
                 "value": "1"
               },
               {
-                "$$hashKey": "object:393",
-                "text": "NO",
-                "value": "0"
+                "text": "DRAIN",
+                "value": "2"
+              },
+              {
+                "text": "INACTIVE",
+                "value": "3"
               }
             ]
           },
           {
-            "$$hashKey": "object:134",
-            "alias": "Started",
+            "alias": "Total nodes",
             "align": "center",
             "colorMode": "cell",
             "colors": [
-              "rgba(245, 54, 54, 0.9)",
               "#56A64B",
-              "#FADE2A"
+              "#56A64B",
+              "#F2CC0C"
             ],
             "dateFormat": "YYYY-MM-DD HH:mm:ss",
             "decimals": 0,
             "link": false,
             "mappingType": 1,
             "pattern": "Value #B",
-            "thresholds": [
-              "1",
-              "2"
-            ],
-            "type": "string",
-            "unit": "bytes",
-            "valueMaps": [
-              {
-                "$$hashKey": "object:395",
-                "text": "NO",
-                "value": "0"
-              },
-              {
-                "$$hashKey": "object:397",
-                "text": "YES",
-                "value": "1"
-              }
-            ]
+            "thresholds": [],
+            "type": "number",
+            "unit": "short"
           },
           {
-            "$$hashKey": "object:135",
-            "alias": "Max jobs",
+            "alias": "Allocated nodes",
             "align": "center",
             "colorMode": "cell",
             "colors": [
-              "rgb(102, 77, 255)",
-              "#FF7383",
-              "rgba(245, 54, 54, 0.9)"
+              "#73BF69",
+              "#E0B400",
+              "#E02F44"
             ],
             "dateFormat": "YYYY-MM-DD HH:mm:ss",
             "decimals": 0,
@@ -641,25 +629,17 @@
             "mappingType": 1,
             "pattern": "Value #C",
             "thresholds": [
-              "0"
+              "1"
             ],
-            "type": "string",
-            "unit": "short",
-            "valueMaps": [
-              {
-                "$$hashKey": "object:409",
-                "text": "No limit",
-                "value": "-1"
-              }
-            ]
+            "type": "number",
+            "unit": "short"
           },
           {
-            "$$hashKey": "object:136",
-            "alias": "Total jobs",
+            "alias": "Idle nodes",
             "align": "center",
             "colorMode": "cell",
             "colors": [
-              "rgb(0, 0, 0)",
+              "#E02F44",
               "#56A64B",
               "#F2CC0C"
             ],
@@ -669,21 +649,19 @@
             "mappingType": 1,
             "pattern": "Value #D",
             "thresholds": [
-              "1",
-              "10"
+              "1"
             ],
             "type": "number",
             "unit": "short"
           },
           {
-            "$$hashKey": "object:137",
-            "alias": "Queued jobs",
+            "alias": "Other nodes",
             "align": "center",
             "colorMode": "cell",
             "colors": [
-              "rgba(0, 0, 0, 0.9)",
+              "rgba(0, 0, 0, 0.97)",
               "#FF780A",
-              "#E02F44"
+              "#F2CC0C"
             ],
             "dateFormat": "YYYY-MM-DD HH:mm:ss",
             "decimals": 0,
@@ -691,144 +669,12 @@
             "mappingType": 1,
             "pattern": "Value #E",
             "thresholds": [
-              "1",
-              "5"
-            ],
-            "type": "number",
-            "unit": "short"
-          },
-          {
-            "$$hashKey": "object:138",
-            "alias": "Running jobs",
-            "align": "center",
-            "colorMode": "cell",
-            "colors": [
-              "rgba(0, 0, 0, 0.97)",
-              "#56A64B",
-              "#F2CC0C"
-            ],
-            "dateFormat": "YYYY-MM-DD HH:mm:ss",
-            "decimals": 0,
-            "link": false,
-            "mappingType": 1,
-            "pattern": "Value #F",
-            "thresholds": [
-              "1",
-              "8"
-            ],
-            "type": "number",
-            "unit": "short"
-          },
-          {
-            "$$hashKey": "object:139",
-            "alias": "Held jobs",
-            "align": "center",
-            "colorMode": "cell",
-            "colors": [
-              "rgba(0, 0, 0, 0.97)",
-              "#FF780A",
-              "rgba(245, 54, 54, 0.9)"
-            ],
-            "dateFormat": "YYYY-MM-DD HH:mm:ss",
-            "decimals": 0,
-            "link": false,
-            "mappingType": 1,
-            "pattern": "Value #G",
-            "thresholds": [
-              "1",
-              "3"
-            ],
-            "type": "number",
-            "unit": "short"
-          },
-          {
-            "$$hashKey": "object:140",
-            "alias": "Waiting jobs",
-            "align": "center",
-            "colorMode": "cell",
-            "colors": [
-              "rgba(0, 0, 0, 0.97)",
-              "rgba(237, 129, 40, 0.89)",
-              "rgba(245, 54, 54, 0.9)"
-            ],
-            "dateFormat": "YYYY-MM-DD HH:mm:ss",
-            "decimals": 0,
-            "link": false,
-            "mappingType": 1,
-            "pattern": "Value #H",
-            "thresholds": [
-              "1",
-              "5"
-            ],
-            "type": "number",
-            "unit": "short"
-          },
-          {
-            "$$hashKey": "object:141",
-            "alias": "Transiting jobs",
-            "align": "center",
-            "colorMode": "cell",
-            "colors": [
-              "rgba(0, 0, 0, 0.97)",
-              "rgba(237, 129, 40, 0.89)",
-              "rgba(245, 54, 54, 0.9)"
-            ],
-            "dateFormat": "YYYY-MM-DD HH:mm:ss",
-            "decimals": 0,
-            "link": false,
-            "mappingType": 1,
-            "pattern": "Value #I",
-            "thresholds": [
-              "1",
-              "3"
-            ],
-            "type": "number",
-            "unit": "short"
-          },
-          {
-            "$$hashKey": "object:142",
-            "alias": "Exiting jobs",
-            "align": "center",
-            "colorMode": "cell",
-            "colors": [
-              "rgba(0, 0, 0, 0.97)",
-              "#56A64B",
-              "rgba(245, 54, 54, 0.9)"
-            ],
-            "dateFormat": "YYYY-MM-DD HH:mm:ss",
-            "decimals": 0,
-            "link": false,
-            "mappingType": 1,
-            "pattern": "Value #J",
-            "thresholds": [
               "1"
             ],
             "type": "number",
             "unit": "short"
           },
           {
-            "$$hashKey": "object:143",
-            "alias": "Completed jobs",
-            "align": "center",
-            "colorMode": "cell",
-            "colors": [
-              "rgba(0, 0, 0, 0.97)",
-              "#37872D",
-              "rgba(245, 54, 54, 0.9)"
-            ],
-            "dateFormat": "YYYY-MM-DD HH:mm:ss",
-            "decimals": 0,
-            "link": false,
-            "mappingType": 1,
-            "pattern": "Value #K",
-            "thresholds": [
-              "1"
-            ],
-            "type": "number",
-            "unit": "short"
-          },
-          {
-            "$$hashKey": "object:144",
             "alias": "",
             "align": "right",
             "colorMode": null,
@@ -846,114 +692,60 @@
         ],
         "targets": [
           {
-            "expr": "pbs_queue_enabled{deployment_label=\"{{ deployment_label }}\"}-0",
+            "expr": "slurm_partition_availability{deployment_label=\"{{ deployment_label }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
             "interval": "",
-            "legendFormat": "enabled",
+            "legendFormat": "availability",
             "refId": "A"
           },
           {
-            "expr": "pbs_queue_started{deployment_label=\"{{ deployment_label }}\"}-0",
+            "expr": "slurm_partition_cores_total{deployment_label=\"{{ deployment_label }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
             "interval": "",
-            "legendFormat": "started",
+            "legendFormat": "total",
             "refId": "B"
           },
           {
-            "expr": "pbs_queue_jobs_max{deployment_label=\"{{ deployment_label }}\"}-0",
+            "expr": "slurm_partition_cores_allocated{deployment_label=\"{{ deployment_label }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
             "interval": "",
-            "legendFormat": "",
+            "legendFormat": "allocated",
             "refId": "C"
           },
           {
-            "expr": "pbs_queue_jobs_total{deployment_label=\"{{ deployment_label }}\"}-0",
+            "expr": "slurm_partition_cores_idle{deployment_label=\"{{ deployment_label }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
             "interval": "",
-            "legendFormat": "",
+            "legendFormat": "idle",
             "refId": "D"
           },
           {
-            "expr": "pbs_queue_jobs_queued{deployment_label=\"{{ deployment_label }}\"}-0",
+            "expr": "slurm_partition_cores_total{deployment_label=\"{{ deployment_label }}\"}-slurm_partition_cores_allocated{deployment_label=\"{{ deployment_label }}\"}-slurm_partition_cores_idle{deployment_label=\"{{ deployment_label }}\"}",
             "format": "table",
             "hide": false,
             "instant": true,
             "interval": "",
-            "legendFormat": "",
+            "legendFormat": "others",
             "refId": "E"
-          },
-          {
-            "expr": "pbs_queue_jobs_running{deployment_label=\"{{ deployment_label }}\"}-0",
-            "format": "table",
-            "hide": false,
-            "instant": true,
-            "interval": "",
-            "legendFormat": "",
-            "refId": "F"
-          },
-          {
-            "expr": "pbs_queue_jobs_held{deployment_label=\"{{ deployment_label }}\"}-0",
-            "format": "table",
-            "hide": false,
-            "instant": true,
-            "interval": "",
-            "legendFormat": "",
-            "refId": "G"
-          },
-          {
-            "expr": "pbs_queue_jobs_waiting{deployment_label=\"{{ deployment_label }}\"}-0",
-            "format": "table",
-            "hide": false,
-            "instant": true,
-            "interval": "",
-            "legendFormat": "",
-            "refId": "H"
-          },
-          {
-            "expr": "pbs_queue_jobs_transit{deployment_label=\"{{ deployment_label }}\"}-0",
-            "format": "table",
-            "hide": false,
-            "instant": true,
-            "interval": "",
-            "legendFormat": "",
-            "refId": "I"
-          },
-          {
-            "expr": "pbs_queue_jobs_exiting{deployment_label=\"{{ deployment_label }}\"}-0",
-            "format": "table",
-            "hide": false,
-            "instant": true,
-            "interval": "",
-            "legendFormat": "",
-            "refId": "J"
-          },
-          {
-            "expr": "pbs_queue_jobs_complete{deployment_label=\"{{ deployment_label }}\"}-0",
-            "format": "table",
-            "hide": false,
-            "instant": true,
-            "interval": "",
-            "legendFormat": "",
-            "refId": "K"
           }
         ],
         "timeFrom": null,
         "timeShift": null,
-        "title": "Queue information【Deployment：{{ deployment_label }}】",
+        "title": "Partition information【Deployment：{{ deployment_label }}】",
         "transform": "table",
         "type": "table-old"
       },
       {
         "collapsed": false,
-        "datasource": "Prometheus",
+        "datasource": "Prometheus-1",
         "gridPos": {
           "h": 1,
           "w": 24,
@@ -970,8 +762,8 @@
         "bars": false,
         "dashLength": 10,
         "dashes": false,
-        "datasource": null,
-        "description": "0:Completed\n1:Exiting\n2:Running\n3:Queued\n4:Waiting\n5:Held\n6:Moving\n7:Suspended ",
+        "datasource": "Prometheus-1",
+        "description": "",
         "fieldConfig": {
           "defaults": {
             "custom": {}
@@ -1001,7 +793,8 @@
         "linewidth": 2,
         "nullPointMode": "null",
         "options": {
-          "alertThreshold": true
+          "alertThreshold": true,
+          "dataLinks": []
         },
         "percentage": false,
         "pluginVersion": "7.3.7",
@@ -1014,7 +807,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "pbs_job_state{deployment_label=\"{{ deployment_label }}\",job_id=~\"$job_id\"}",
+            "expr": "slurm_job_state{deployment_label=\"{{ deployment_label }}\",job_id=~\"$job_id\"}",
             "format": "time_series",
             "interval": "",
             "legendFormat": "$job_id",
@@ -1022,7 +815,6 @@
           }
         ],
         "thresholds": [],
-        "timeFrom": null,
         "timeRegions": [],
         "timeShift": null,
         "title": "Job State",
@@ -1041,17 +833,15 @@
         },
         "yaxes": [
           {
-            "$$hashKey": "object:148",
             "decimals": 0,
             "format": "short",
             "label": null,
             "logBase": 1,
-            "max": "7",
+            "max": "23",
             "min": "0",
             "show": true
           },
           {
-            "$$hashKey": "object:149",
             "format": "short",
             "label": null,
             "logBase": 1,
@@ -1072,7 +862,7 @@
         "bars": false,
         "dashLength": 10,
         "dashes": false,
-        "datasource": null,
+        "datasource": "Prometheus-1",
         "fieldConfig": {
           "defaults": {
             "custom": {}
@@ -1114,7 +904,8 @@
         "linewidth": 1,
         "nullPointMode": "null",
         "options": {
-          "alertThreshold": true
+          "alertThreshold": true,
+          "dataLinks": []
         },
         "percentage": false,
         "pluginVersion": "7.3.7",
@@ -1127,17 +918,16 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "pbs_job_mem_virtual{deployment_label=\"{{ deployment_label }}\",job_id=~\"$job_id\"}",
+            "expr": "slurm_job_memory_virtual_max{deployment_label=\"{{ deployment_label }}\",job_id=~\"$job_id\"}",
             "interval": "",
             "legendFormat": "Mem",
             "refId": "A"
           }
         ],
         "thresholds": [],
-        "timeFrom": null,
         "timeRegions": [],
         "timeShift": null,
-        "title": "Virtual memory",
+        "title": "Maximum virtual memory",
         "tooltip": {
           "shared": true,
           "sort": 0,
@@ -1153,7 +943,6 @@
         },
         "yaxes": [
           {
-            "$$hashKey": "object:330",
             "format": "bytes",
             "label": null,
             "logBase": 1,
@@ -1162,7 +951,6 @@
             "show": true
           },
           {
-            "$$hashKey": "object:331",
             "format": "short",
             "label": null,
             "logBase": 1,
@@ -1183,7 +971,7 @@
         "bars": false,
         "dashLength": 10,
         "dashes": false,
-        "datasource": null,
+        "datasource": "Prometheus-1",
         "fieldConfig": {
           "defaults": {
             "custom": {}
@@ -1213,7 +1001,8 @@
         "linewidth": 1,
         "nullPointMode": "null",
         "options": {
-          "alertThreshold": true
+          "alertThreshold": true,
+          "dataLinks": []
         },
         "percentage": false,
         "pluginVersion": "7.3.7",
@@ -1226,17 +1015,16 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "pbs_job_memory_physical{deployment_label=\"{{ deployment_label }}\",job_id=~\"$job_id\"}",
+            "expr": "slurm_job_memory_physical_max{deployment_label=\"{{ deployment_label }}\",job_id=~\"$job_id\"}",
             "interval": "",
             "legendFormat": "Mem",
             "refId": "A"
           }
         ],
         "thresholds": [],
-        "timeFrom": null,
         "timeRegions": [],
         "timeShift": null,
-        "title": "Physical memory",
+        "title": "Maximum physical memory",
         "tooltip": {
           "shared": true,
           "sort": 0,
@@ -1252,7 +1040,6 @@
         },
         "yaxes": [
           {
-            "$$hashKey": "object:503",
             "format": "bytes",
             "label": null,
             "logBase": 1,
@@ -1261,7 +1048,6 @@
             "show": true
           },
           {
-            "$$hashKey": "object:504",
             "format": "short",
             "label": null,
             "logBase": 1,
@@ -1276,14 +1062,13 @@
         }
       },
       {
-        "datasource": null,
+        "datasource": "Prometheus-1",
         "description": "",
         "fieldConfig": {
           "defaults": {
             "custom": {},
             "decimals": 2,
             "mappings": [],
-            "max": 1,
             "min": 0,
             "thresholds": {
               "mode": "percentage",
@@ -1297,81 +1082,25 @@
                   "value": 70
                 },
                 {
-                  "color": "red",
+                  "color": "blue",
                   "value": 90
                 }
               ]
             },
-            "unit": "percentunit"
+            "unit": "dthms"
           },
           "overrides": []
         },
         "gridPos": {
-          "h": 6,
+          "h": 9,
           "w": 3,
           "x": 21,
           "y": 15
         },
         "id": 198,
         "options": {
-          "reduceOptions": {
-            "calcs": [
-              "last"
-            ],
-            "fields": "",
-            "limit": 1,
-            "values": true
-          },
-          "showThresholdLabels": false,
-          "showThresholdMarkers": true
-        },
-        "pluginVersion": "7.3.7",
-        "targets": [
-          {
-            "expr": "pbs_job_walltime_used{deployment_label=\"{{ deployment_label }}\",job_id=~\"$job_id\"}/pbs_job_walltime_max{deployment_label=\"{{ deployment_label }}\",job_id=~\"$job_id\"}",
-            "instant": true,
-            "interval": "",
-            "legendFormat": "$job_id",
-            "refId": "A"
-          },
-          {
-            "refId": "B"
-          }
-        ],
-        "timeFrom": null,
-        "timeShift": null,
-        "title": "Job walltime used",
-        "type": "gauge"
-      },
-      {
-        "datasource": null,
-        "fieldConfig": {
-          "defaults": {
-            "custom": {},
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                }
-              ]
-            },
-            "unit": "dtdhms"
-          },
-          "overrides": []
-        },
-        "gridPos": {
-          "h": 3,
-          "w": 3,
-          "x": 21,
-          "y": 21
-        },
-        "id": 204,
-        "options": {
           "colorMode": "value",
-          "graphMode": "none",
+          "graphMode": "area",
           "justifyMode": "auto",
           "orientation": "auto",
           "reduceOptions": {
@@ -1379,27 +1108,28 @@
               "last"
             ],
             "fields": "",
-            "values": false
-          },
-          "textMode": "value"
+            "limit": 1,
+            "values": true
+          }
         },
-        "pluginVersion": "7.3.7",
+        "pluginVersion": "7.0.3",
         "targets": [
           {
-            "expr": "pbs_job_time_queued{deployment_label=\"{{ deployment_label }}\",job_id=~\"$job_id\"}",
+            "expr": "slurm_job_walltime_used{deployment_label=\"{{ deployment_label }}\",job_id=~\"$job_id\"}",
+            "instant": true,
             "interval": "",
-            "legendFormat": "",
+            "legendFormat": "$job_id",
             "refId": "A"
           }
         ],
         "timeFrom": null,
         "timeShift": null,
-        "title": "Queued time",
+        "title": "Job walltime used",
         "type": "stat"
       },
       {
         "collapsed": false,
-        "datasource": "Prometheus",
+        "datasource": "Prometheus-1",
         "gridPos": {
           "h": 1,
           "w": 24,
@@ -1408,7 +1138,7 @@
         },
         "id": 199,
         "panels": [],
-        "title": "Queue info (associated deployment)，Queue：$queue",
+        "title": "Partition info (associated deployment)，partition：$partition",
         "type": "row"
       },
       {
@@ -1416,8 +1146,8 @@
         "bars": false,
         "dashLength": 10,
         "dashes": false,
-        "datasource": null,
-        "description": "State of the selected queue",
+        "datasource": "Prometheus-1",
+        "description": "Availability of the selected partition",
         "fieldConfig": {
           "defaults": {
             "custom": {}
@@ -1447,7 +1177,8 @@
         "linewidth": 2,
         "nullPointMode": "null",
         "options": {
-          "alertThreshold": true
+          "alertThreshold": true,
+          "dataLinks": []
         },
         "percentage": false,
         "pluginVersion": "7.3.7",
@@ -1460,25 +1191,17 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "pbs_queue_enabled{deployment_label=\"{{ deployment_label }}\",queue_name=~\"$queue\"}",
+            "expr": "slurm_partition_availability{deployment_label=\"{{ deployment_label }}\",partition=~\"$partition\"}",
             "format": "time_series",
             "interval": "",
-            "legendFormat": "Enabled",
+            "legendFormat": "Availability",
             "refId": "A"
-          },
-          {
-            "expr": "pbs_queue_started{deployment_label=\"{{ deployment_label }}\",queue_name=~\"$queue\"}",
-            "format": "time_series",
-            "interval": "",
-            "legendFormat": "Started",
-            "refId": "B"
           }
         ],
         "thresholds": [],
-        "timeFrom": null,
         "timeRegions": [],
         "timeShift": null,
-        "title": "Queue state",
+        "title": "Partition availability",
         "tooltip": {
           "shared": true,
           "sort": 0,
@@ -1494,17 +1217,15 @@
         },
         "yaxes": [
           {
-            "$$hashKey": "object:148",
             "decimals": 0,
             "format": "short",
             "label": null,
             "logBase": 1,
-            "max": "1",
+            "max": "3",
             "min": "0",
             "show": true
           },
           {
-            "$$hashKey": "object:149",
             "format": "short",
             "label": null,
             "logBase": 1,
@@ -1520,37 +1241,20 @@
       },
       {
         "aliasColors": {
-          "Complete": "dark-green",
-          "Exiting": "rgb(196, 31, 160)",
-          "Held": "rgb(112, 72, 25)",
-          "Max": "dark-red",
-          "Queued": "yellow",
-          "Running": "dark-blue",
-          "Transit": "rgb(252, 166, 0)",
-          "Waiting": "dark-purple"
+          "Allocated": "semi-dark-green",
+          "Idle": "light-yellow",
+          "Others": "semi-dark-red"
         },
         "bars": false,
         "dashLength": 10,
         "dashes": false,
-        "datasource": null,
-        "decimals": 0,
+        "datasource": "Prometheus-1",
+        "description": "Number of nodes in each state",
         "fieldConfig": {
           "defaults": {
             "custom": {}
           },
-          "overrides": [
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "Time"
-              },
-              "properties": [
-                {
-                  "id": "links"
-                }
-              ]
-            }
-          ]
+          "overrides": []
         },
         "fill": 10,
         "fillGradient": 0,
@@ -1561,7 +1265,7 @@
           "y": 25
         },
         "hiddenSeries": false,
-        "id": 202,
+        "id": 204,
         "legend": {
           "alignAsTable": true,
           "avg": false,
@@ -1570,18 +1274,16 @@
           "min": false,
           "rightSide": true,
           "show": true,
-          "sideWidth": 250,
           "total": false,
           "values": true
         },
         "lines": true,
         "linewidth": 0,
-        "nullPointMode": "null",
+        "nullPointMode": "connected",
         "options": {
-          "alertThreshold": false
+          "dataLinks": []
         },
         "percentage": false,
-        "pluginVersion": "7.3.7",
         "pointradius": 2,
         "points": false,
         "renderer": "flot",
@@ -1591,59 +1293,28 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "pbs_queue_jobs_queued{deployment_label=\"{{ deployment_label }}\",queue_name=~\"$queue\"}",
+            "expr": "slurm_partition_cores_allocated{deployment_label=\"{{ deployment_label }}\",partition=~\"$partition\"}",
             "interval": "",
-            "legendFormat": "Queued",
+            "legendFormat": "Allocated",
             "refId": "B"
           },
           {
-            "expr": "pbs_queue_jobs_waiting{deployment_label=\"{{ deployment_label }}\",queue_name=~\"$queue\"}",
+            "expr": "slurm_partition_cores_idle{deployment_label=\"{{ deployment_label }}\",partition=~\"$partition\"}",
             "interval": "",
-            "legendFormat": "Waiting",
-            "refId": "D"
-          },
-          {
-            "expr": "pbs_queue_jobs_running{deployment_label=\"{{ deployment_label }}\",queue_name=~\"$queue\"}",
-            "interval": "",
-            "legendFormat": "Running",
-            "refId": "A"
-          },
-          {
-            "expr": "pbs_queue_jobs_transit{deployment_label=\"{{ deployment_label }}\",queue_name=~\"$queue\"}",
-            "interval": "",
-            "legendFormat": "Transit",
-            "refId": "E"
-          },
-          {
-            "expr": "pbs_queue_jobs_held{deployment_label=\"{{ deployment_label }}\",queue_name=~\"$queue\"}",
-            "interval": "",
-            "legendFormat": "Held",
+            "legendFormat": "Idle",
             "refId": "C"
           },
           {
-            "expr": "pbs_queue_jobs_exiting{deployment_label=\"{{ deployment_label }}\",queue_name=~\"$queue\"}",
+            "expr": "slurm_partition_cores_total{deployment_label=\"{{ deployment_label }}\",partition=~\"$partition\"}-slurm_partition_cores_allocated{deployment_label=\"{{ deployment_label }}\",partition=~\"$partition\"}-slurm_partition_cores_idle{deployment_label=\"{{ deployment_label }}\",partition=~\"$partition\"}",
             "interval": "",
-            "legendFormat": "Exiting",
-            "refId": "F"
-          },
-          {
-            "expr": "(pbs_queue_jobs_max{deployment_label=\"{{ deployment_label }}\",queue_name=~\"$queue\"}+abs(pbs_queue_jobs_max{deployment_label=\"{{ deployment_label }}\",queue_name=~\"$queue\"}))/2*(1-pbs_queue_jobs_total{deployment_label=\"{{ deployment_label }}\",queue_name=~\"$queue\"}/pbs_queue_jobs_max{deployment_label=\"{{ deployment_label }}\",queue_name=~\"$queue\"})",
-            "interval": "",
-            "legendFormat": "Max",
-            "refId": "H"
-          },
-          {
-            "expr": "pbs_queue_jobs_complete{deployment_label=\"{{ deployment_label }}\",queue_name=~\"$queue\"}",
-            "interval": "",
-            "legendFormat": "Complete",
-            "refId": "G"
+            "legendFormat": "Others",
+            "refId": "A"
           }
         ],
         "thresholds": [],
-        "timeFrom": null,
         "timeRegions": [],
         "timeShift": null,
-        "title": "Jobs submitted to queue: $queue",
+        "title": "Partition nodes state: $partition",
         "tooltip": {
           "shared": true,
           "sort": 0,
@@ -1659,17 +1330,14 @@
         },
         "yaxes": [
           {
-            "$$hashKey": "object:330",
-            "decimals": 0,
             "format": "short",
-            "label": "",
+            "label": null,
             "logBase": 1,
             "max": null,
             "min": "0",
             "show": true
           },
           {
-            "$$hashKey": "object:331",
             "format": "short",
             "label": null,
             "logBase": 1,
@@ -1684,8 +1352,8 @@
         }
       }
     ],
-    "refresh": "5m",
-    "schemaVersion": 26,
+    "refresh": "15s",
+    "schemaVersion": 25,
     "style": "dark",
     "tags": [],
     "templating": {
@@ -1694,19 +1362,19 @@
           "allValue": null,
           "current": {
             "selected": false,
-            "text": "2378.cloudserver",
-            "value": "2378.cloudserver"
+            "text": "grapevine",
+            "value": "grapevine"
           },
-          "datasource": "Prometheus",
-          "definition": "label_values(pbs_job_state{deployment_label=\"{{ deployment_label }}\"}, job_id)",
+          "datasource": "Prometheus-1",
+          "definition": "label_values(slurm_partition_availability, deployment_label)",
           "error": null,
-          "hide": 0,
+          "hide": 2,
           "includeAll": false,
-          "label": "Job ID",
+          "label": "Deployment Label",
           "multi": false,
-          "name": "job_id",
+          "name": "deployment_label",
           "options": [],
-          "query": "label_values(pbs_job_state{deployment_label=\"{{ deployment_label }}\"}, job_id)",
+          "query": "label_values(slurm_partition_availability, deployment_label)",
           "refresh": 1,
           "regex": "",
           "skipUrlSync": false,
@@ -1721,41 +1389,47 @@
           "allValue": null,
           "current": {
             "selected": false,
-            "text": "batch",
-            "value": "batch"
+            "text": "6008389",
+            "value": "6008389"
           },
-          "datasource": "Prometheus",
-          "definition": "label_values(pbs_queue_enabled{deployment_label=\"{{ deployment_label }}\"},queue_name)",
+          "datasource": "Prometheus-1",
+          "definition": "label_values(slurm_job_state{deployment_label=\"{{ deployment_label }}\"}, job_id)",
           "error": null,
           "hide": 0,
           "includeAll": false,
-          "label": "Queue",
+          "label": "Job ID",
           "multi": false,
-          "name": "queue",
-          "options": [
-            {
-              "selected": true,
-              "text": "batch",
-              "value": "batch"
-            },
-            {
-              "selected": false,
-              "text": "cpu",
-              "value": "cpu"
-            },
-            {
-              "selected": false,
-              "text": "gpu",
-              "value": "gpu"
-            },
-            {
-              "selected": false,
-              "text": "ssd",
-              "value": "ssd"
-            }
-          ],
-          "query": "label_values(pbs_queue_enabled{deployment_label=\"{{ deployment_label }}\"},queue_name)",
-          "refresh": 0,
+          "name": "job_id",
+          "options": [],
+          "query": "label_values(slurm_job_state{deployment_label=\"{{ deployment_label }}\"}, job_id)",
+          "refresh": 2,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 0,
+          "tagValuesQuery": "",
+          "tags": [],
+          "tagsQuery": "",
+          "type": "query",
+          "useTags": false
+        },
+        {
+          "allValue": null,
+          "current": {
+            "selected": false,
+            "text": "thinnodes",
+            "value": "thinnodes"
+          },
+          "datasource": "Prometheus-1",
+          "definition": "label_values(slurm_partition_availability{deployment_label=\"{{ deployment_label }}\"},partition)",
+          "error": null,
+          "hide": 0,
+          "includeAll": false,
+          "label": "Partition",
+          "multi": false,
+          "name": "partition",
+          "options": [],
+          "query": "label_values(slurm_partition_availability{deployment_label=\"{{ deployment_label }}\"},partition)",
+          "refresh": 1,
           "regex": "",
           "skipUrlSync": false,
           "sort": 0,
@@ -1768,7 +1442,7 @@
       ]
     },
     "time": {
-      "from": "now-3h",
+      "from": "now-1h",
       "to": "now"
     },
     "timepicker": {
@@ -1795,7 +1469,8 @@
       ]
     },
     "timezone": "",
-    "title": "SODALITE-PBS-EXPORTERS-{{ deployment_label }}"
+    "title": "SODALITE-SLURM-EXPORTERS-{{ deployment_label }}",
+    "version": 10
   },
   "dashboard.uid": null,
   "overwrite": true
