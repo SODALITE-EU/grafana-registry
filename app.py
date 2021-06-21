@@ -30,7 +30,7 @@ for protocol in ['http:', 'https:']:
 def create_dashboards():
     user_info = _token_info(_get_token(request))
     if not user_info:
-        return "Access not authorized", 401
+        return "Access not authorized\n", 401
 
     user_email = user_info['email']
     user_name = user_info['name']
@@ -39,10 +39,10 @@ def create_dashboards():
     if 'deployment_label' in json_data:
         deployment_label = json_data['deployment_label']
     else:
-        return "Request must include deployment_label", 403
+        return "Request must include deployment_label\n", 403
 
     if not _check_user_deployment_availability(user_email, deployment_label):
-        return "Deployment label already belongs to a different user", 403
+        return "Deployment label already belongs to a different user\n", 403
 
     if user_email not in dashboard_uids:
         dashboard_urls[user_email] = {}
@@ -50,7 +50,7 @@ def create_dashboards():
         dashboard_ids[user_email] = {}
         user_id = _get_user_id(user_email, user_name)
         if user_id is None:
-            return "Could not register user in Grafana", 500
+            return "Could not register user in Grafana\n", 500
         user_ids[user_email] = user_id
 
     dashboard_urls[user_email][deployment_label] = {}
@@ -69,36 +69,36 @@ def create_dashboards():
                  auth=basicAuth(gf_admin_user, gf_admin_pw),
                  json=loads(dashboard))
         r_json = r.json()
-        dashboard = {
+        dashboard_data = {
             "uid": r_json['uid'],
             "url": r_json['url'],
             "id": str(r_json['id'])
         }
-        dashboard_urls[user_email][deployment_label][dashboard_type] = dashboard["url"]
-        dashboard_uids[user_email][deployment_label][dashboard_type] = dashboard["uid"]
-        dashboard_ids[user_email][deployment_label][dashboard_type] = dashboard["id"]
+        dashboard_urls[user_email][deployment_label][dashboard_type] = dashboard_data["url"]
+        dashboard_uids[user_email][deployment_label][dashboard_type] = dashboard_data["uid"]
+        dashboard_ids[user_email][deployment_label][dashboard_type] = dashboard_data["id"]
 
         # Update the dashboard to include the dashboard url in the links and real uid
         dashboard = template.render(deployment_label=deployment_label,
-                                    dashboard_url=dashboard["url"],
-                                    dashboard_uid='"' + dashboard["uid"] + '"')
+                                    dashboard_url=dashboard_data["url"],
+                                    dashboard_uid='"' + dashboard_data["uid"] + '"')
         post('http://' + gf_endpoint + '/api/dashboards/db',
              auth=basicAuth(gf_admin_user, gf_admin_pw),
              json=loads(dashboard))
 
         # Set the permissions
-        post('http://' + gf_endpoint + '/api/dashboards/id/' + dashboard["id"] + '/permissions',
+        post('http://' + gf_endpoint + '/api/dashboards/id/' + dashboard_data["id"] + '/permissions',
              auth=basicAuth(gf_admin_user, gf_admin_pw),
              json={"items": [{"userId": user_ids[user_email], "permission": 1}]})
 
-    return "Dashboards added", 200
+    return "Dashboards added\n", 200
 
 
 @app.route('/dashboards', methods=['DELETE'])
 def delete_dashboards():
     user_info = _token_info(_get_token(request))
     if not user_info:
-        return "Access not authorized", 401
+        return "Access not authorized\n", 401
 
     user_email = user_info['email']
 
@@ -107,31 +107,35 @@ def delete_dashboards():
     if 'deployment_label' in json_data:
         deployment_label = json_data['deployment_label']
     else:
-        return "Request must include deployment_label", 403
+        return "Request must include deployment_label\n", 403
 
     if user_email not in dashboard_uids or deployment_label not in dashboard_uids[user_email]:
-        return "Could not find the deployment_label in the user list of dashboards", 404
+        return "Could not find the deployment_label in the user's list of dashboards\n", 404
     for dashboard in dashboard_uids[user_email][deployment_label]:
         r = delete('http://' + gf_endpoint + '/api/dashboards/uid/' +
                    dashboard_uids[user_email][deployment_label][dashboard],
                    auth=basicAuth(gf_admin_user, gf_admin_pw))
         if r.status_code != 200:
-            return "Could not delete the dashboard " + dashboard + ": " + str(r.content), r.status_code
+            return "Could not delete the dashboard " + dashboard + ": " + str(r.content)+"\n", r.status_code
 
-    dashboard_urls.pop(deployment_label)
-    dashboard_uids.pop(deployment_label)
-    dashboard_ids.pop(deployment_label)
+    dashboard_urls[user_email].pop(deployment_label)
+    dashboard_uids[user_email].pop(deployment_label)
+    dashboard_ids[user_email].pop(deployment_label)
 
-    return "Dashboards deleted", 200
+    return "Dashboards deleted\n", 200
 
 
-@app.route('/dashboards/user/', methods=['GET'])
+@app.route('/dashboards/user', methods=['GET'])
 def get_dashboards_user():
     user_info = _token_info(_get_token(request))
     if not user_info:
-        return "Access not authorized", 401
+        return "Access not authorized\n", 401
 
     user_email = user_info['email']
+
+    if user_email not in dashboard_urls:
+        return "Could not find the user\n", 404
+
     return dashboard_urls[user_email], 200
 
 
@@ -139,11 +143,13 @@ def get_dashboards_user():
 def get_dashboards_deployment(deployment_label):
     user_info = _token_info(_get_token(request))
     if not user_info:
-        return "Access not authorized", 401
+        return "Access not authorized\n", 401
 
     user_email = user_info['email']
     if not deployment_label:
-        return "Must provide the deployment_label", 403
+        return "Must provide the deployment_label\n", 403
+    if user_email not in dashboard_urls or deployment_label not in dashboard_urls[user_email]:
+        return "Could not find the deployment\n", 404
 
     return dashboard_urls[user_email][deployment_label], 200
 
