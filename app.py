@@ -28,8 +28,7 @@ for protocol in ['http:', 'https:']:
 
 @app.route('/dashboards', methods=['POST'])
 def create_dashboards():
-    token = get_token(request)
-    user_info = token_info(token)
+    user_info = _token_info(_get_token(request))
     if not user_info:
         return "Access not authorized", 401
 
@@ -42,18 +41,17 @@ def create_dashboards():
     else:
         return "Request must include deployment_label", 403
 
-    if not check_user_deployment_availability(user_email, deployment_label):
+    if not _check_user_deployment_availability(user_email, deployment_label):
         return "Deployment label already belongs to a different user", 403
 
     if user_email not in dashboard_uids:
         dashboard_urls[user_email] = {}
         dashboard_uids[user_email] = {}
         dashboard_ids[user_email] = {}
-        user_id = get_user_id(user_email, user_name)
+        user_id = _get_user_id(user_email, user_name)
         if user_id is None:
             return "Could not register user in Grafana", 500
-        else:
-            user_ids[user_email] = user_id
+        user_ids[user_email] = user_id
 
     dashboard_urls[user_email][deployment_label] = {}
     dashboard_uids[user_email][deployment_label] = {}
@@ -71,23 +69,25 @@ def create_dashboards():
                  auth=basicAuth(gf_admin_user, gf_admin_pw),
                  json=loads(dashboard))
         r_json = r.json()
-        dashboard_uid = r_json['uid']
-        dashboard_url = r_json['url']
-        dashboard_id = str(r_json['id'])
-        dashboard_urls[user_email][deployment_label][dashboard_type] = dashboard_url
-        dashboard_uids[user_email][deployment_label][dashboard_type] = dashboard_uid
-        dashboard_ids[user_email][deployment_label][dashboard_type] = dashboard_id
+        dashboard = {
+            "uid": r_json['uid'],
+            "url": r_json['url'],
+            "id": str(r_json['id'])
+        }
+        dashboard_urls[user_email][deployment_label][dashboard_type] = dashboard["url"]
+        dashboard_uids[user_email][deployment_label][dashboard_type] = dashboard["uid"]
+        dashboard_ids[user_email][deployment_label][dashboard_type] = dashboard["id"]
 
         # Update the dashboard to include the dashboard url in the links and real uid
         dashboard = template.render(deployment_label=deployment_label,
-                                    dashboard_url=dashboard_url,
-                                    dashboard_uid='"' + dashboard_uid + '"')
+                                    dashboard_url=dashboard["url"],
+                                    dashboard_uid='"' + dashboard["uid"] + '"')
         post('http://' + gf_endpoint + '/api/dashboards/db',
              auth=basicAuth(gf_admin_user, gf_admin_pw),
              json=loads(dashboard))
 
         # Set the permissions
-        post('http://' + gf_endpoint + '/api/dashboards/id/' + dashboard_id + '/permissions',
+        post('http://' + gf_endpoint + '/api/dashboards/id/' + dashboard["id"] + '/permissions',
              auth=basicAuth(gf_admin_user, gf_admin_pw),
              json={"items": [{"userId": user_ids[user_email], "permission": 1}]})
 
@@ -96,8 +96,7 @@ def create_dashboards():
 
 @app.route('/dashboards', methods=['DELETE'])
 def delete_dashboards():
-    token = get_token(request)
-    user_info = token_info(token)
+    user_info = _token_info(_get_token(request))
     if not user_info:
         return "Access not authorized", 401
 
@@ -128,8 +127,7 @@ def delete_dashboards():
 
 @app.route('/dashboards/user/', methods=['GET'])
 def get_dashboards_user():
-    token = get_token(request)
-    user_info = token_info(token)
+    user_info = _token_info(_get_token(request))
     if not user_info:
         return "Access not authorized", 401
 
@@ -139,8 +137,7 @@ def get_dashboards_user():
 
 @app.route('/dashboards/deployment/<deployment_label>', methods=['GET'])
 def get_dashboards_deployment(deployment_label):
-    token = get_token(request)
-    user_info = token_info(token)
+    user_info = _token_info(_get_token(request))
     if not user_info:
         return "Access not authorized", 401
 
@@ -151,7 +148,7 @@ def get_dashboards_deployment(deployment_label):
     return dashboard_urls[user_email][deployment_label], 200
 
 
-def token_info(access_token) -> dict:
+def _token_info(access_token) -> dict:
 
     req = {'token': access_token}
     headers = {'Content-type': 'application/x-www-form-urlencoded'}
@@ -174,12 +171,12 @@ def token_info(access_token) -> dict:
         return {}
 
 
-def get_user_id(user_email, user_name):
+def _get_user_id(user_email, user_name):
     r = get('http://' + gf_endpoint + '/api/users/lookup?loginOrEmail=' + user_email,
             auth=basicAuth(gf_admin_user, gf_admin_pw), json={})
     if r.status_code == 200:
         return r.json()['id']
-    elif r.status_code == 404:
+    if r.status_code == 404:
         # If the user isn't registered, register it.
         r = post('http://' + gf_endpoint + '/api/admin/users',
                  auth=basicAuth(gf_admin_user, gf_admin_pw), json={
@@ -191,11 +188,10 @@ def get_user_id(user_email, user_name):
                     }).json()
         if "id" in r:
             return r["id"]
-        else:
-            return None
+    return None
 
 
-def check_user_deployment_availability(user_email, deployment_label):
+def _check_user_deployment_availability(user_email, deployment_label):
     for user in dashboard_uids:
         for deployment in dashboard_uids[user]:
             if deployment_label == deployment and user != user_email:
@@ -203,7 +199,7 @@ def check_user_deployment_availability(user_email, deployment_label):
     return True
 
 
-def get_token(request):
+def _get_token(request):
     auth_header = request.environ["HTTP_AUTHORIZATION"].split()
     if auth_header[0] == "Bearer":
         return auth_header[1]
