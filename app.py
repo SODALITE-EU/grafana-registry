@@ -1,19 +1,24 @@
-from os import path, listdir
+from base64 import b64encode
+from os import path, listdir, getenv
 from flask import Flask, request
-from requests import post, delete
+from requests import post, delete, Session, adapters
 from requests.auth import HTTPBasicAuth as basicAuth
 from jinja2 import Environment, PackageLoader
 from json import loads
+import logging
 
 env = Environment(loader=PackageLoader("app"), autoescape=False)
 app = Flask(__name__)
 dashboard_urls = {}
 dashboard_uids = {}
 dashboard_ids = {}
-gf_endpoint = 'localhost:3000'
-gf_admin_user = 'admin'
-gf_admin_pw = 'admin'
-userId=2
+gf_endpoint = 'localhost:'+getenv("GF_PORT", "")
+gf_admin_user = getenv("GF_ADMIN_USER", "admin")
+gf_admin_pw = getenv("GF_ADMIN_PW", "")
+oidc_client_id = getenv("OIDC_CLIENT_ID", "sodalite-ide")
+oidc_client_secret = getenv("OIDC_CLIENT_SECRET", "")
+oidc_introspection_endpoint = getenv("OIDC_INTROSPECTION_ENDPOINT", "")
+
 
 @app.route('/create_dashboards', methods=['POST'])
 def create_dashboards():
@@ -76,7 +81,7 @@ def delete_dashboards():
         r = delete('http://' + gf_endpoint + '/api/dashboards/uid/' + dashboard_uids[deployment_label][dashboard],
                    auth=basicAuth(gf_admin_user, gf_admin_pw))
         if r.status_code != 200:
-            return "Could not delete the dashboard "+dashboard+": "+r.content, r.status_code
+            return "Could not delete the dashboard " + dashboard + ": " + str(r.content), r.status_code
 
     dashboard_urls.pop(deployment_label)
     dashboard_uids.pop(deployment_label)
@@ -95,3 +100,29 @@ def get_dashboards():
         return "Request must include deployment_label", 403
 
     return dashboard_urls[deployment_label], 200
+
+
+def token_info(access_token) -> dict:
+    session = Session()
+    adapter = adapters.HTTPAdapter(pool_connections=100, pool_maxsize=100)
+    for protocol in ['http:', 'https:']:
+        session.mount(protocol, adapter)
+    req = {'token': access_token}
+    headers = {'Content-type': 'application/x-www-form-urlencoded'}
+    if not oidc_introspection_endpoint:
+        return {}
+
+    basic_auth_string = '{0}:{1}'.format(oidc_client_id, oidc_client_secret)
+    basic_auth_bytes = bytearray(basic_auth_string, 'utf-8')
+    headers['Authorization'] = 'Basic {0}'.format(b64encode(basic_auth_bytes).decode('utf-8'))
+    try:
+        token_request = post(oidc_introspection_endpoint, data=req, headers=headers)
+        if not token_request.ok:
+            return {}
+        json = token_request.json
+        if "active" in json and json["active"] is False:
+            return {}
+        return json
+    except Exception as e:
+        logging.error(str(e))
+        return {}
