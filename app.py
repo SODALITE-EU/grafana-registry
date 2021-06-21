@@ -28,7 +28,8 @@ for protocol in ['http:', 'https:']:
 
 @app.route('/dashboards', methods=['POST'])
 def create_dashboards():
-    user_info = token_info(request.authorization)
+    token = get_token(request)
+    user_info = token_info(token)
     if not user_info:
         return "Access not authorized", 401
 
@@ -95,7 +96,8 @@ def create_dashboards():
 
 @app.route('/dashboards', methods=['DELETE'])
 def delete_dashboards():
-    user_info = token_info(request.authorization)
+    token = get_token(request)
+    user_info = token_info(token)
     if not user_info:
         return "Access not authorized", 401
 
@@ -126,7 +128,8 @@ def delete_dashboards():
 
 @app.route('/dashboards/user/', methods=['GET'])
 def get_dashboards_user():
-    user_info = token_info(request.authorization)
+    token = get_token(request)
+    user_info = token_info(token)
     if not user_info:
         return "Access not authorized", 401
 
@@ -135,8 +138,9 @@ def get_dashboards_user():
 
 
 @app.route('/dashboards/deployment/<deployment_label>', methods=['GET'])
-def get_dashboards_user(deployment_label):
-    user_info = token_info(request.authorization)
+def get_dashboards_deployment(deployment_label):
+    token = get_token(request)
+    user_info = token_info(token)
     if not user_info:
         return "Access not authorized", 401
 
@@ -197,3 +201,10 @@ def check_user_deployment_availability(user_email, deployment_label):
             if deployment_label == deployment and user != user_email:
                 return False
     return True
+
+
+def get_token(request):
+    auth_header = request.environ["HTTP_AUTHORIZATION"].split()
+    if auth_header[0] == "Bearer":
+        return auth_header[1]
+    return ""
