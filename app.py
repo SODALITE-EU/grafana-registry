@@ -157,18 +157,23 @@ def get_dashboards_deployment(deployment_label):
 def _token_info(access_token) -> dict:
 
     req = {'token': access_token}
+    logging.info("Checking token: " + access_token)
+    logging.info("oidc_introspection endpoint: " + oidc_introspection_endpoint)
     headers = {'Content-type': 'application/x-www-form-urlencoded'}
     if not oidc_introspection_endpoint:
         return {}
 
     basic_auth_string = '{0}:{1}'.format(oidc_client_id, oidc_client_secret)
+    logging.info("oidc_client_id: " + oidc_introspection_endpoint)
+    logging.info("oidc_client_secret: " + oidc_client_secret)
     basic_auth_bytes = bytearray(basic_auth_string, 'utf-8')
     headers['Authorization'] = 'Basic {0}'.format(b64encode(basic_auth_bytes).decode('utf-8'))
     try:
-        token_request = post(oidc_introspection_endpoint, data=req, headers=headers)
-        if not token_request.ok:
+        token_response = post(oidc_introspection_endpoint, data=req, headers=headers)
+        logging.info("response: " + str(token_response))
+        if not token_response.ok:
             return {}
-        json = token_request.json()
+        json = token_response.json()
         if "active" in json and json["active"] is False:
             return {}
         return json
@@ -205,8 +210,8 @@ def _check_user_deployment_availability(user_email, deployment_label):
     return True
 
 
-def _get_token(request):
-    auth_header = request.environ["HTTP_AUTHORIZATION"].split()
+def _get_token(r):
+    auth_header = r.environ["HTTP_AUTHORIZATION"].split()
     if auth_header[0] == "Bearer":
         return auth_header[1]
     return ""
