@@ -52,7 +52,7 @@ pipeline {
                 }
              }
             steps {
-                sh "cd docker && ./make_docker.sh build grafana-registry"
+                sh "cd CI-CD && ./make_docker.sh build grafana-registry"
             }
         }
         stage('Push grafana-registry to sodalite-private-registry') {
@@ -68,7 +68,7 @@ pipeline {
             steps {
                 withDockerRegistry(credentialsId: 'jenkins-sodalite.docker_token', url: '') {
                     sh  """#!/bin/bash
-                        ./docker/make_docker.sh push grafana-registry staging
+                        ./CI-CD/make_docker.sh push grafana-registry staging
                         """
                 }
             }
@@ -85,7 +85,7 @@ pipeline {
              }
             steps {
                 withDockerRegistry(credentialsId: 'jenkins-sodalite.docker_token', url: '') {
-                    sh "./docker/make_docker.sh push grafana-registry production"
+                    sh "./CI-CD/make_docker.sh push grafana-registry production"
                 }
             }
         }
