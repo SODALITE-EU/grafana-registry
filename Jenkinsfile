@@ -30,6 +30,18 @@ pipeline {
                 checkout scm
             }
         }
+        stage('SonarQube analysis'){
+            environment {
+              scannerHome = tool 'SonarQubeScanner'
+            }
+            steps {
+                withSonarQubeEnv('SonarCloud') {
+                    sh  """ #!/bin/bash
+                            ${scannerHome}/bin/sonar-scanner
+                        """
+                }
+            }
+        }
         stage('Inspect GIT TAG'){
             steps {
                 sh """ #!/bin/bash
