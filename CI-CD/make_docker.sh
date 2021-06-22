@@ -14,7 +14,7 @@
 
 build() {
     set -x
-    docker build --build-arg VERSION="${VERSION}" --build-arg DATE="${DATE}" -t "${IMAGE}":latest -f "${FILE}" .
+    docker build --build-arg VERSION="${VERSION}" --build-arg DATE="${DATE}" -t "${IMAGE}":latest -f "./${FILE}" ..
     set +x
 }
 
