@@ -5,7 +5,6 @@ from requests import post, delete, get, Session, adapters
 from requests.auth import HTTPBasicAuth as basicAuth
 from jinja2 import Environment, PackageLoader
 from json import loads
-import logging
 
 env = Environment(loader=PackageLoader("app"), autoescape=False)
 app = Flask(__name__)
@@ -13,7 +12,7 @@ dashboard_urls = {}
 dashboard_uids = {}
 dashboard_ids = {}
 user_ids = {}
-gf_endpoint = getenv("GF_ADDRESS", "") +':' + getenv("GF_PORT", "")
+gf_endpoint = getenv("GF_ADDRESS", "") + ':' + getenv("GF_PORT", "")
 gf_admin_user = getenv("GF_ADMIN_USER", "admin")
 gf_admin_pw = getenv("GF_ADMIN_PW", "")
 oidc_client_id = getenv("OIDC_CLIENT_ID", "sodalite-ide")
