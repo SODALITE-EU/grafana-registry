@@ -73,7 +73,7 @@ pipeline {
                 }
             }
         }
-        stage('Push HPC-exporter to DockerHub') {
+        stage('Push grafana-registry to DockerHub') {
             when {
                 allOf {
                     // Triggered on every tag, that is considered for staging or production
