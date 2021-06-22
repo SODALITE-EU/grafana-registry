@@ -13,7 +13,7 @@ dashboard_urls = {}
 dashboard_uids = {}
 dashboard_ids = {}
 user_ids = {}
-gf_endpoint = 'localhost:' + getenv("GF_PORT", "")
+gf_endpoint = getenv("GF_ADDRESS", "") +':' + getenv("GF_PORT", "")
 gf_admin_user = getenv("GF_ADMIN_USER", "admin")
 gf_admin_pw = getenv("GF_ADMIN_PW", "")
 oidc_client_id = getenv("OIDC_CLIENT_ID", "sodalite-ide")
@@ -28,9 +28,12 @@ for protocol in ['http:', 'https:']:
 
 @app.route('/dashboards', methods=['POST'])
 def create_dashboards():
-    user_info = _token_info(_get_token(request))
+    try:
+        user_info = _token_info(_get_token(request))
+    except Exception as e:
+        return e, 500
     if not user_info:
-        return "Access not authorized\n", 401
+        return "Unauthorized access\n", 401
 
     user_email = user_info['email']
     user_name = user_info['name']
@@ -96,7 +99,10 @@ def create_dashboards():
 
 @app.route('/dashboards', methods=['DELETE'])
 def delete_dashboards():
-    user_info = _token_info(_get_token(request))
+    try:
+        user_info = _token_info(_get_token(request))
+    except Exception as e:
+        return e, 500
     if not user_info:
         return "Access not authorized\n", 401
 
@@ -127,7 +133,10 @@ def delete_dashboards():
 
 @app.route('/dashboards/user', methods=['GET'])
 def get_dashboards_user():
-    user_info = _token_info(_get_token(request))
+    try:
+        user_info = _token_info(_get_token(request))
+    except Exception as e:
+        return e, 500
     if not user_info:
         return "Access not authorized\n", 401
 
@@ -157,29 +166,25 @@ def get_dashboards_deployment(deployment_label):
 def _token_info(access_token) -> dict:
 
     req = {'token': access_token}
-    logging.info("Checking token: " + access_token)
-    logging.info("oidc_introspection endpoint: " + oidc_introspection_endpoint)
     headers = {'Content-type': 'application/x-www-form-urlencoded'}
     if not oidc_introspection_endpoint:
-        return {}
+        raise Exception("No oidc_introspection_endpoint set on the server")
 
     basic_auth_string = '{0}:{1}'.format(oidc_client_id, oidc_client_secret)
-    logging.info("oidc_client_id: " + oidc_introspection_endpoint)
-    logging.info("oidc_client_secret: " + oidc_client_secret)
     basic_auth_bytes = bytearray(basic_auth_string, 'utf-8')
     headers['Authorization'] = 'Basic {0}'.format(b64encode(basic_auth_bytes).decode('utf-8'))
-    try:
-        token_response = post(oidc_introspection_endpoint, data=req, headers=headers)
-        logging.info("response: " + str(token_response))
-        if not token_response.ok:
-            return {}
-        json = token_response.json()
-        if "active" in json and json["active"] is False:
-            return {}
-        return json
-    except Exception as e:
-        logging.error(str(e))
+
+    token_response = post(oidc_introspection_endpoint, data=req, headers=headers)
+    if token_response.status_code != 200:
+        raise Exception("There was a problem trying to authenticate with keycloak:\n"
+                        " HTTP code: " + str(token_response.status_code) + "\n"
+                        " Content:" + str(token_response.content) + "\n")
+    if not token_response.ok:
         return {}
+    json = token_response.json()
+    if "active" in json and json["active"] is False:
+        return {}
+    return json
 
 
 def _get_user_id(user_email, user_name):

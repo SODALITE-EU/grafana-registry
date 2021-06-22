@@ -5,6 +5,8 @@ FROM python:3.8-slim-buster
 RUN apt-get update -y && \
     apt-get install -y netcat-openbsd
 
+EXPOSE 3001
+
 COPY ./requirements.txt /app/requirements.txt
 
 WORKDIR /app
