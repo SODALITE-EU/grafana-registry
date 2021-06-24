@@ -30,7 +30,7 @@ def create_dashboards():
     try:
         user_info = _token_info(_get_token(request))
     except Exception as e:
-        return e, 500
+        return str(e), 500
     if not user_info:
         return "Unauthorized access\n", 401
 
@@ -101,7 +101,7 @@ def delete_dashboards():
     try:
         user_info = _token_info(_get_token(request))
     except Exception as e:
-        return e, 500
+        return str(e), 500
     if not user_info:
         return "Access not authorized\n", 401
 
@@ -135,7 +135,7 @@ def get_dashboards_user():
     try:
         user_info = _token_info(_get_token(request))
     except Exception as e:
-        return e, 500
+        return str(e), 500
     if not user_info:
         return "Access not authorized\n", 401
 
@@ -149,7 +149,10 @@ def get_dashboards_user():
 
 @app.route('/dashboards/deployment/<deployment_label>', methods=['GET'])
 def get_dashboards_deployment(deployment_label):
-    user_info = _token_info(_get_token(request))
+    try:
+        user_info = _token_info(_get_token(request))
+    except Exception as e:
+        return str(e), 500
     if not user_info:
         return "Access not authorized\n", 401
 
