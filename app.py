@@ -113,7 +113,6 @@ def delete_dashboards():
     json_data = request.json
 
     if 'deployment_label' in json_data and 'deployment_label' in json_data:
-        deployment_label = json_data['deployment_label']
         deployment_id = json_data['deployment_id']
     else:
         return "Request must include deployment_label and deployment_id\n", 403
