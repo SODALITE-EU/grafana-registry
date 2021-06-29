@@ -414,7 +414,7 @@
         ],
         "targets": [
           {
-            "expr": "slurm_job_cpu_n{deployment_label=\"{{ deployment_label }}\"}-0",
+            "expr": "slurm_job_cpu_n{deployment_id=\"{{ deployment_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -423,7 +423,7 @@
             "refId": "A"
           },
           {
-            "expr": "slurm_job_state{deployment_label=\"{{ deployment_label }}\"}-0",
+            "expr": "slurm_job_state{deployment_id=\"{{ deployment_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -432,7 +432,7 @@
             "refId": "B"
           },
           {
-            "expr": "slurm_job_walltime_used{deployment_label=\"{{ deployment_label }}\"}-0",
+            "expr": "slurm_job_walltime_used{deployment_id=\"{{ deployment_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -441,7 +441,7 @@
             "refId": "D"
           },
           {
-            "expr": "slurm_job_queued{deployment_label=\"{{ deployment_label }}\"}-0",
+            "expr": "slurm_job_queued{deployment_id=\"{{ deployment_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -450,7 +450,7 @@
             "refId": "F"
           },
           {
-            "expr": "slurm_job_memory_virtual_max{deployment_label=\"{{ deployment_label }}\"}-0",
+            "expr": "slurm_job_memory_virtual_max{deployment_id=\"{{ deployment_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -459,7 +459,7 @@
             "refId": "G"
           },
           {
-            "expr": "slurm_job_memory_physical_max{deployment_label=\"{{ deployment_label }}\"}-0",
+            "expr": "slurm_job_memory_physical_max{deployment_id=\"{{ deployment_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -468,7 +468,7 @@
             "refId": "H"
           },
           {
-            "expr": "slurm_job_exit_code{deployment_label=\"{{ deployment_label }}\"}-0",
+            "expr": "slurm_job_exit_code{deployment_id=\"{{ deployment_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -477,7 +477,7 @@
             "refId": "I"
           },
           {
-            "expr": "slurm_job_exit_signal{deployment_label=\"{{ deployment_label }}\"}-0",
+            "expr": "slurm_job_exit_signal{deployment_id=\"{{ deployment_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -691,7 +691,7 @@
         ],
         "targets": [
           {
-            "expr": "slurm_partition_availability{deployment_label=\"{{ deployment_label }}\"}-0",
+            "expr": "slurm_partition_availability{deployment_id=\"{{ deployment_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -700,7 +700,7 @@
             "refId": "A"
           },
           {
-            "expr": "slurm_partition_cores_total{deployment_label=\"{{ deployment_label }}\"}-0",
+            "expr": "slurm_partition_cores_total{deployment_id=\"{{ deployment_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -709,7 +709,7 @@
             "refId": "B"
           },
           {
-            "expr": "slurm_partition_cores_allocated{deployment_label=\"{{ deployment_label }}\"}-0",
+            "expr": "slurm_partition_cores_allocated{deployment_id=\"{{ deployment_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -718,7 +718,7 @@
             "refId": "C"
           },
           {
-            "expr": "slurm_partition_cores_idle{deployment_label=\"{{ deployment_label }}\"}-0",
+            "expr": "slurm_partition_cores_idle{deployment_id=\"{{ deployment_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -727,7 +727,7 @@
             "refId": "D"
           },
           {
-            "expr": "slurm_partition_cores_total{deployment_label=\"{{ deployment_label }}\"}-slurm_partition_cores_allocated{deployment_label=\"{{ deployment_label }}\"}-slurm_partition_cores_idle{deployment_label=\"{{ deployment_label }}\"}",
+            "expr": "slurm_partition_cores_total{deployment_id=\"{{ deployment_id }}\"}-slurm_partition_cores_allocated{deployment_id=\"{{ deployment_id }}\"}-slurm_partition_cores_idle{deployment_id=\"{{ deployment_id }}\"}",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -806,7 +806,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "slurm_job_state{deployment_label=\"{{ deployment_label }}\",job_id=~\"$job_id\"}",
+            "expr": "slurm_job_state{deployment_id=\"{{ deployment_id }}\",job_id=~\"$job_id\"}",
             "format": "time_series",
             "interval": "",
             "legendFormat": "$job_id",
@@ -917,7 +917,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "slurm_job_memory_virtual_max{deployment_label=\"{{ deployment_label }}\",job_id=~\"$job_id\"}",
+            "expr": "slurm_job_memory_virtual_max{deployment_id=\"{{ deployment_id }}\",job_id=~\"$job_id\"}",
             "interval": "",
             "legendFormat": "Mem",
             "refId": "A"
@@ -1014,7 +1014,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "slurm_job_memory_physical_max{deployment_label=\"{{ deployment_label }}\",job_id=~\"$job_id\"}",
+            "expr": "slurm_job_memory_physical_max{deployment_id=\"{{ deployment_id }}\",job_id=~\"$job_id\"}",
             "interval": "",
             "legendFormat": "Mem",
             "refId": "A"
@@ -1114,7 +1114,7 @@
         "pluginVersion": "7.0.3",
         "targets": [
           {
-            "expr": "slurm_job_walltime_used{deployment_label=\"{{ deployment_label }}\",job_id=~\"$job_id\"}",
+            "expr": "slurm_job_walltime_used{deployment_id=\"{{ deployment_id }}\",job_id=~\"$job_id\"}",
             "instant": true,
             "interval": "",
             "legendFormat": "$job_id",
@@ -1190,7 +1190,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "slurm_partition_availability{deployment_label=\"{{ deployment_label }}\",partition=~\"$partition\"}",
+            "expr": "slurm_partition_availability{deployment_id=\"{{ deployment_id }}\",partition=~\"$partition\"}",
             "format": "time_series",
             "interval": "",
             "legendFormat": "Availability",
@@ -1292,19 +1292,19 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "slurm_partition_cores_allocated{deployment_label=\"{{ deployment_label }}\",partition=~\"$partition\"}",
+            "expr": "slurm_partition_cores_allocated{deployment_id=\"{{ deployment_id }}\",partition=~\"$partition\"}",
             "interval": "",
             "legendFormat": "Allocated",
             "refId": "B"
           },
           {
-            "expr": "slurm_partition_cores_idle{deployment_label=\"{{ deployment_label }}\",partition=~\"$partition\"}",
+            "expr": "slurm_partition_cores_idle{deployment_id=\"{{ deployment_id }}\",partition=~\"$partition\"}",
             "interval": "",
             "legendFormat": "Idle",
             "refId": "C"
           },
           {
-            "expr": "slurm_partition_cores_total{deployment_label=\"{{ deployment_label }}\",partition=~\"$partition\"}-slurm_partition_cores_allocated{deployment_label=\"{{ deployment_label }}\",partition=~\"$partition\"}-slurm_partition_cores_idle{deployment_label=\"{{ deployment_label }}\",partition=~\"$partition\"}",
+            "expr": "slurm_partition_cores_total{deployment_id=\"{{ deployment_id }}\",partition=~\"$partition\"}-slurm_partition_cores_allocated{deployment_id=\"{{ deployment_id }}\",partition=~\"$partition\"}-slurm_partition_cores_idle{deployment_id=\"{{ deployment_id }}\",partition=~\"$partition\"}",
             "interval": "",
             "legendFormat": "Others",
             "refId": "A"
@@ -1392,7 +1392,7 @@
             "value": "6008389"
           },
           "datasource": "Prometheus",
-          "definition": "label_values(slurm_job_state{deployment_label=\"{{ deployment_label }}\"}, job_id)",
+          "definition": "label_values(slurm_job_state{deployment_id=\"{{ deployment_id }}\"}, job_id)",
           "error": null,
           "hide": 0,
           "includeAll": false,
@@ -1400,7 +1400,7 @@
           "multi": false,
           "name": "job_id",
           "options": [],
-          "query": "label_values(slurm_job_state{deployment_label=\"{{ deployment_label }}\"}, job_id)",
+          "query": "label_values(slurm_job_state{deployment_id=\"{{ deployment_id }}\"}, job_id)",
           "refresh": 2,
           "regex": "",
           "skipUrlSync": false,
@@ -1419,7 +1419,7 @@
             "value": "thinnodes"
           },
           "datasource": "Prometheus",
-          "definition": "label_values(slurm_partition_availability{deployment_label=\"{{ deployment_label }}\"},partition)",
+          "definition": "label_values(slurm_partition_availability{deployment_id=\"{{ deployment_id }}\"},partition)",
           "error": null,
           "hide": 0,
           "includeAll": false,
@@ -1427,7 +1427,7 @@
           "multi": false,
           "name": "partition",
           "options": [],
-          "query": "label_values(slurm_partition_availability{deployment_label=\"{{ deployment_label }}\"},partition)",
+          "query": "label_values(slurm_partition_availability{deployment_id=\"{{ deployment_id }}\"},partition)",
           "refresh": 1,
           "regex": "",
           "skipUrlSync": false,
