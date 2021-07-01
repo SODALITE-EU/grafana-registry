@@ -347,7 +347,7 @@
         ],
         "targets": [
           {
-            "expr": "sum(time() - node_boot_time_seconds{deployment_id=\"{{ monitoring_id }}\"})by(instance_name)",
+            "expr": "sum(time() - node_boot_time_seconds{monitoring_id=\"{{ monitoring_id }}\"})by(instance_name)",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -356,7 +356,7 @@
             "refId": "D"
           },
           {
-            "expr": "node_memory_MemTotal_bytes{deployment_id=\"{{ monitoring_id }}\"} - 0",
+            "expr": "node_memory_MemTotal_bytes{monitoring_id=\"{{ monitoring_id }}\"} - 0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -365,7 +365,7 @@
             "refId": "B"
           },
           {
-            "expr": "count(node_cpu_seconds_total{deployment_id=\"{{ monitoring_id }}\",mode='system'}) by (instance_name)",
+            "expr": "count(node_cpu_seconds_total{monitoring_id=\"{{ monitoring_id }}\",mode='system'}) by (instance_name)",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -374,7 +374,7 @@
             "refId": "C"
           },
           {
-            "expr": "node_load5{deployment_id=\"{{ monitoring_id }}\"}",
+            "expr": "node_load5{monitoring_id=\"{{ monitoring_id }}\"}",
             "format": "table",
             "instant": true,
             "interval": "",
@@ -382,7 +382,7 @@
             "refId": "L"
           },
           {
-            "expr": "(1 - avg(rate(node_cpu_seconds_total{deployment_id=\"{{ monitoring_id }}\",mode=\"idle\"}[$interval])) by (instance_name)) * 100",
+            "expr": "(1 - avg(rate(node_cpu_seconds_total{monitoring_id=\"{{ monitoring_id }}\",mode=\"idle\"}[$interval])) by (instance_name)) * 100",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -391,7 +391,7 @@
             "refId": "F"
           },
           {
-            "expr": "(1 - (node_memory_MemAvailable_bytes{deployment_id=\"{{ monitoring_id }}\"} / (node_memory_MemTotal_bytes{deployment_id=\"{{ monitoring_id }}\"})))* 100",
+            "expr": "(1 - (node_memory_MemAvailable_bytes{monitoring_id=\"{{ monitoring_id }}\"} / (node_memory_MemTotal_bytes{monitoring_id=\"{{ monitoring_id }}\"})))* 100",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -400,7 +400,7 @@
             "refId": "G"
           },
           {
-            "expr": "max((node_filesystem_size_bytes{deployment_id=\"{{ monitoring_id }}\",fstype=~\"ext.?|xfs\"}-node_filesystem_free_bytes{deployment_id=\"{{ monitoring_id }}\",fstype=~\"ext.?|xfs\"}) *100/(node_filesystem_avail_bytes{deployment_id=\"{{ monitoring_id }}\",fstype=~\"ext.?|xfs\"}+(node_filesystem_size_bytes{deployment_id=\"{{ monitoring_id }}\",fstype=~\"ext.?|xfs\"}-node_filesystem_free_bytes{deployment_id=\"{{ monitoring_id }}\",fstype=~\"ext.?|xfs\"})))by(instance_name)",
+            "expr": "max((node_filesystem_size_bytes{monitoring_id=\"{{ monitoring_id }}\",fstype=~\"ext.?|xfs\"}-node_filesystem_free_bytes{monitoring_id=\"{{ monitoring_id }}\",fstype=~\"ext.?|xfs\"}) *100/(node_filesystem_avail_bytes{monitoring_id=\"{{ monitoring_id }}\",fstype=~\"ext.?|xfs\"}+(node_filesystem_size_bytes{monitoring_id=\"{{ monitoring_id }}\",fstype=~\"ext.?|xfs\"}-node_filesystem_free_bytes{monitoring_id=\"{{ monitoring_id }}\",fstype=~\"ext.?|xfs\"})))by(instance_name)",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -409,7 +409,7 @@
             "refId": "E"
           },
           {
-            "expr": "max(rate(node_disk_read_bytes_total{deployment_id=\"{{ monitoring_id }}\"}[$interval])) by (instance_name)",
+            "expr": "max(rate(node_disk_read_bytes_total{monitoring_id=\"{{ monitoring_id }}\"}[$interval])) by (instance_name)",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -418,7 +418,7 @@
             "refId": "H"
           },
           {
-            "expr": "max(rate(node_disk_written_bytes_total{deployment_id=\"{{ monitoring_id }}\"}[$interval])) by (instance_name)",
+            "expr": "max(rate(node_disk_written_bytes_total{monitoring_id=\"{{ monitoring_id }}\"}[$interval])) by (instance_name)",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -427,7 +427,7 @@
             "refId": "I"
           },
           {
-            "expr": "node_netstat_Tcp_CurrEstab{deployment_id=\"{{ monitoring_id }}\"} - 0",
+            "expr": "node_netstat_Tcp_CurrEstab{monitoring_id=\"{{ monitoring_id }}\"} - 0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -436,7 +436,7 @@
             "refId": "M"
           },
           {
-            "expr": "node_sockstat_TCP_tw{deployment_id=\"{{ monitoring_id }}\"} - 0",
+            "expr": "node_sockstat_TCP_tw{monitoring_id=\"{{ monitoring_id }}\"} - 0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -445,7 +445,7 @@
             "refId": "N"
           },
           {
-            "expr": "max(rate(node_network_receive_bytes_total{deployment_id=\"{{ monitoring_id }}\"}[$interval])*8) by (instance_name)",
+            "expr": "max(rate(node_network_receive_bytes_total{monitoring_id=\"{{ monitoring_id }}\"}[$interval])*8) by (instance_name)",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -454,7 +454,7 @@
             "refId": "J"
           },
           {
-            "expr": "max(rate(node_network_transmit_bytes_total{deployment_id=\"{{ monitoring_id }}\"}[$interval])*8) by (instance_name)",
+            "expr": "max(rate(node_network_transmit_bytes_total{monitoring_id=\"{{ monitoring_id }}\"}[$interval])*8) by (instance_name)",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -556,7 +556,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "count(node_cpu_seconds_total{deployment_id=\"{{ monitoring_id }}\", mode='system'})",
+            "expr": "count(node_cpu_seconds_total{monitoring_id=\"{{ monitoring_id }}\", mode='system'})",
             "format": "time_series",
             "hide": false,
             "instant": false,
@@ -567,7 +567,7 @@
             "step": 240
           },
           {
-            "expr": "sum(node_load5{deployment_id=\"{{ monitoring_id }}\"})",
+            "expr": "sum(node_load5{monitoring_id=\"{{ monitoring_id }}\"})",
             "format": "time_series",
             "hide": false,
             "interval": "1m",
@@ -577,7 +577,7 @@
             "step": 240
           },
           {
-            "expr": "avg(1 - avg(rate(node_cpu_seconds_total{deployment_id=\"{{ monitoring_id }}\",mode=\"idle\"}[$interval])) by (instance)) * 100",
+            "expr": "avg(1 - avg(rate(node_cpu_seconds_total{monitoring_id=\"{{ monitoring_id }}\",mode=\"idle\"}[$interval])) by (instance)) * 100",
             "format": "time_series",
             "hide": false,
             "interval": "1m",
@@ -710,7 +710,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "sum(node_memory_MemTotal_bytes{deployment_id=\"{{ monitoring_id }}\"})",
+            "expr": "sum(node_memory_MemTotal_bytes{monitoring_id=\"{{ monitoring_id }}\"})",
             "format": "time_series",
             "hide": false,
             "instant": false,
@@ -721,7 +721,7 @@
             "step": 4
           },
           {
-            "expr": "sum(node_memory_MemTotal_bytes{deployment_id=\"{{ monitoring_id }}\"} - node_memory_MemAvailable_bytes{deployment_id=\"{{ monitoring_id }}\"})",
+            "expr": "sum(node_memory_MemTotal_bytes{monitoring_id=\"{{ monitoring_id }}\"} - node_memory_MemAvailable_bytes{monitoring_id=\"{{ monitoring_id }}\"})",
             "format": "time_series",
             "hide": false,
             "interval": "1m",
@@ -731,7 +731,7 @@
             "step": 4
           },
           {
-            "expr": "(sum(node_memory_MemTotal_bytes{deployment_id=\"{{ monitoring_id }}\"} - node_memory_MemAvailable_bytes{deployment_id=\"{{ monitoring_id }}\"}) / sum(node_memory_MemTotal_bytes{deployment_id=\"{{ monitoring_id }}\"}))*100",
+            "expr": "(sum(node_memory_MemTotal_bytes{monitoring_id=\"{{ monitoring_id }}\"} - node_memory_MemAvailable_bytes{monitoring_id=\"{{ monitoring_id }}\"}) / sum(node_memory_MemTotal_bytes{monitoring_id=\"{{ monitoring_id }}\"}))*100",
             "format": "time_series",
             "hide": false,
             "interval": "1m",
@@ -856,7 +856,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "sum(avg(node_filesystem_size_bytes{deployment_id=\"{{ monitoring_id }}\",fstype=~\"xfs|ext.*\"})by(device,instance_name))",
+            "expr": "sum(avg(node_filesystem_size_bytes{monitoring_id=\"{{ monitoring_id }}\",fstype=~\"xfs|ext.*\"})by(device,instance_name))",
             "format": "time_series",
             "instant": false,
             "interval": "1m",
@@ -865,7 +865,7 @@
             "refId": "E"
           },
           {
-            "expr": "sum(avg(node_filesystem_size_bytes{deployment_id=\"{{ monitoring_id }}\",fstype=~\"xfs|ext.*\"})by(device,instance_name)) - sum(avg(node_filesystem_free_bytes{deployment_id=\"{{ monitoring_id }}\",fstype=~\"xfs|ext.*\"})by(device,instance_name))",
+            "expr": "sum(avg(node_filesystem_size_bytes{monitoring_id=\"{{ monitoring_id }}\",fstype=~\"xfs|ext.*\"})by(device,instance_name)) - sum(avg(node_filesystem_free_bytes{monitoring_id=\"{{ monitoring_id }}\",fstype=~\"xfs|ext.*\"})by(device,instance_name))",
             "format": "time_series",
             "instant": false,
             "interval": "1m",
@@ -874,7 +874,7 @@
             "refId": "C"
           },
           {
-            "expr": "(sum(avg(node_filesystem_size_bytes{deployment_id=\"{{ monitoring_id }}\",fstype=~\"xfs|ext.*\"})by(device,instance_name)) - sum(avg(node_filesystem_free_bytes{deployment_id=\"{{ monitoring_id }}\",fstype=~\"xfs|ext.*\"})by(device,instance_name))) *100/sum(avg(node_filesystem_size_bytes{deployment_id=\"{{ monitoring_id }}\",fstype=~\"xfs|ext.*\"})by(device,instance_name))",
+            "expr": "(sum(avg(node_filesystem_size_bytes{monitoring_id=\"{{ monitoring_id }}\",fstype=~\"xfs|ext.*\"})by(device,instance_name)) - sum(avg(node_filesystem_free_bytes{monitoring_id=\"{{ monitoring_id }}\",fstype=~\"xfs|ext.*\"})by(device,instance_name))) *100/sum(avg(node_filesystem_size_bytes{monitoring_id=\"{{ monitoring_id }}\",fstype=~\"xfs|ext.*\"})by(device,instance_name))",
             "format": "time_series",
             "instant": false,
             "interval": "1m",
@@ -1306,7 +1306,7 @@
         ],
         "targets": [
           {
-            "expr": "node_filesystem_size_bytes{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.*|xfs\",mountpoint !~\".*pod.*\"}-0",
+            "expr": "node_filesystem_size_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.*|xfs\",mountpoint !~\".*pod.*\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -1316,7 +1316,7 @@
             "refId": "C"
           },
           {
-            "expr": "node_filesystem_avail_bytes {deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.*|xfs\",mountpoint !~\".*pod.*\"}-0",
+            "expr": "node_filesystem_avail_bytes {monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.*|xfs\",mountpoint !~\".*pod.*\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -1326,7 +1326,7 @@
             "refId": "A"
           },
           {
-            "expr": "(node_filesystem_size_bytes{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.*|xfs\",mountpoint !~\".*pod.*\"}-node_filesystem_free_bytes{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.*|xfs\",mountpoint !~\".*pod.*\"}) *100/node_filesystem_size_bytes{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.*|xfs\",mountpoint !~\".*pod.*\"}",
+            "expr": "(node_filesystem_size_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.*|xfs\",mountpoint !~\".*pod.*\"}-node_filesystem_free_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.*|xfs\",mountpoint !~\".*pod.*\"}) *100/node_filesystem_size_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.*|xfs\",mountpoint !~\".*pod.*\"}",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -1470,7 +1470,7 @@
         "pluginVersion": "7.3.7",
         "targets": [
           {
-            "expr": "(1-avg(rate(node_cpu_seconds_total{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",mode=\"idle\"}[$interval])) by (cpu)) *100",
+            "expr": "(1-avg(rate(node_cpu_seconds_total{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",mode=\"idle\"}[$interval])) by (cpu)) *100",
             "interval": "",
             "legendFormat": "",
             "refId": "A"
@@ -1878,7 +1878,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "avg(rate(node_cpu_seconds_total{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",mode=\"system\"}[$interval])) by (instance) *100",
+            "expr": "avg(rate(node_cpu_seconds_total{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",mode=\"system\"}[$interval])) by (instance) *100",
             "format": "time_series",
             "hide": false,
             "instant": false,
@@ -1889,7 +1889,7 @@
             "step": 20
           },
           {
-            "expr": "avg(rate(node_cpu_seconds_total{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",mode=\"user\"}[$interval])) by (instance) *100",
+            "expr": "avg(rate(node_cpu_seconds_total{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",mode=\"user\"}[$interval])) by (instance) *100",
             "format": "time_series",
             "hide": false,
             "interval": "",
@@ -1899,7 +1899,7 @@
             "step": 240
           },
           {
-            "expr": "avg(rate(node_cpu_seconds_total{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",mode=\"iowait\"}[$interval])) by (instance) *100",
+            "expr": "avg(rate(node_cpu_seconds_total{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",mode=\"iowait\"}[$interval])) by (instance) *100",
             "format": "time_series",
             "hide": false,
             "instant": false,
@@ -1910,7 +1910,7 @@
             "step": 240
           },
           {
-            "expr": "(1 - avg(rate(node_cpu_seconds_total{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",mode=\"idle\"}[$interval])) by (instance))*100",
+            "expr": "(1 - avg(rate(node_cpu_seconds_total{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",mode=\"idle\"}[$interval])) by (instance))*100",
             "format": "time_series",
             "hide": false,
             "interval": "",
@@ -2046,7 +2046,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "node_memory_MemTotal_bytes{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",}",
+            "expr": "node_memory_MemTotal_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",}",
             "format": "time_series",
             "hide": false,
             "instant": false,
@@ -2057,7 +2057,7 @@
             "step": 4
           },
           {
-            "expr": "node_memory_MemTotal_bytes{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",} - node_memory_MemAvailable_bytes{instance_name=~\"$instance_name\"}",
+            "expr": "node_memory_MemTotal_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",} - node_memory_MemAvailable_bytes{instance_name=~\"$instance_name\"}",
             "format": "time_series",
             "hide": false,
             "interval": "",
@@ -2067,7 +2067,7 @@
             "step": 4
           },
           {
-            "expr": "node_memory_MemAvailable_bytes{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
+            "expr": "node_memory_MemAvailable_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
             "format": "time_series",
             "hide": false,
             "interval": "",
@@ -2077,7 +2077,7 @@
             "step": 4
           },
           {
-            "expr": "node_memory_Buffers_bytes{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
+            "expr": "node_memory_Buffers_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
             "format": "time_series",
             "hide": true,
             "interval": "",
@@ -2087,7 +2087,7 @@
             "step": 4
           },
           {
-            "expr": "node_memory_MemFree_bytes{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
+            "expr": "node_memory_MemFree_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
             "format": "time_series",
             "hide": true,
             "interval": "",
@@ -2097,7 +2097,7 @@
             "step": 4
           },
           {
-            "expr": "node_memory_Cached_bytes{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
+            "expr": "node_memory_Cached_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
             "format": "time_series",
             "hide": true,
             "interval": "",
@@ -2107,7 +2107,7 @@
             "step": 4
           },
           {
-            "expr": "node_memory_MemTotal_bytes{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"} - (node_memory_Cached_bytes{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"} + node_memory_Buffers_bytes{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"} + node_memory_MemFree_bytes{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"})",
+            "expr": "node_memory_MemTotal_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"} - (node_memory_Cached_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"} + node_memory_Buffers_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"} + node_memory_MemFree_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"})",
             "format": "time_series",
             "hide": true,
             "interval": "",
@@ -2116,7 +2116,7 @@
             "refId": "G"
           },
           {
-            "expr": "(1 - (node_memory_MemAvailable_bytes{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"} / (node_memory_MemTotal_bytes{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"})))* 100",
+            "expr": "(1 - (node_memory_MemAvailable_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"} / (node_memory_MemTotal_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"})))* 100",
             "format": "time_series",
             "hide": false,
             "interval": "1m",
@@ -2234,7 +2234,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "rate(node_network_receive_bytes_total{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",device=~\"$device\"}[$interval])*8",
+            "expr": "rate(node_network_receive_bytes_total{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",device=~\"$device\"}[$interval])*8",
             "format": "time_series",
             "interval": "",
             "intervalFactor": 1,
@@ -2243,7 +2243,7 @@
             "step": 4
           },
           {
-            "expr": "rate(node_network_transmit_bytes_total{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",device=~\"$device\"}[$interval])*8",
+            "expr": "rate(node_network_transmit_bytes_total{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",device=~\"$device\"}[$interval])*8",
             "format": "time_series",
             "interval": "",
             "intervalFactor": 1,
@@ -2367,7 +2367,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "node_load1{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
+            "expr": "node_load1{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
             "format": "time_series",
             "instant": false,
             "interval": "",
@@ -2379,7 +2379,7 @@
             "target": ""
           },
           {
-            "expr": "node_load5{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
+            "expr": "node_load5{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
             "format": "time_series",
             "instant": false,
             "interval": "",
@@ -2389,7 +2389,7 @@
             "step": 20
           },
           {
-            "expr": "node_load15{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
+            "expr": "node_load15{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
             "format": "time_series",
             "instant": false,
             "interval": "",
@@ -2399,7 +2399,7 @@
             "step": 20
           },
           {
-            "expr": " sum(count(node_cpu_seconds_total{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\", mode='system'}) by (cpu,instance)) by(instance)",
+            "expr": " sum(count(node_cpu_seconds_total{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\", mode='system'}) by (cpu,instance)) by(instance)",
             "format": "time_series",
             "instant": false,
             "interval": "",
@@ -2516,7 +2516,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "rate(node_disk_read_bytes_total{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
+            "expr": "rate(node_disk_read_bytes_total{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
             "format": "time_series",
             "interval": "",
             "intervalFactor": 1,
@@ -2525,7 +2525,7 @@
             "step": 10
           },
           {
-            "expr": "rate(node_disk_written_bytes_total{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
+            "expr": "rate(node_disk_written_bytes_total{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
             "format": "time_series",
             "hide": false,
             "interval": "",
@@ -2650,7 +2650,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "increase(node_network_receive_bytes_total{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",device=~\"$device\"}[60m])",
+            "expr": "increase(node_network_receive_bytes_total{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",device=~\"$device\"}[60m])",
             "interval": "1m",
             "intervalFactor": 1,
             "legendFormat": "{{device}}_receive",
@@ -2660,7 +2660,7 @@
             "target": ""
           },
           {
-            "expr": "increase(node_network_transmit_bytes_total{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",device=~\"$device\"}[60m])",
+            "expr": "increase(node_network_transmit_bytes_total{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",device=~\"$device\"}[60m])",
             "hide": false,
             "interval": "1m",
             "intervalFactor": 1,
@@ -2777,7 +2777,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "rate(node_disk_reads_completed_total{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
+            "expr": "rate(node_disk_reads_completed_total{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
             "format": "time_series",
             "hide": false,
             "interval": "",
@@ -2787,7 +2787,7 @@
             "step": 10
           },
           {
-            "expr": "rate(node_disk_writes_completed_total{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
+            "expr": "rate(node_disk_writes_completed_total{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
             "format": "time_series",
             "hide": false,
             "interval": "",
@@ -2797,7 +2797,7 @@
             "step": 10
           },
           {
-            "expr": "node_disk_io_now{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
+            "expr": "node_disk_io_now{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
             "format": "time_series",
             "hide": true,
             "interval": "",
@@ -2923,7 +2923,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "rate(node_disk_io_time_seconds_total{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
+            "expr": "rate(node_disk_io_time_seconds_total{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
             "format": "time_series",
             "interval": "",
             "intervalFactor": 1,
@@ -3039,7 +3039,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "(node_filesystem_size_bytes{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.*|xfs\",mountpoint !~\".*pod.*\"}-node_filesystem_free_bytes{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.*|xfs\",mountpoint !~\".*pod.*\"}) *100/node_filesystem_size_bytes{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.*|xfs\",mountpoint !~\".*pod.*\"}",
+            "expr": "(node_filesystem_size_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.*|xfs\",mountpoint !~\".*pod.*\"}-node_filesystem_free_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.*|xfs\",mountpoint !~\".*pod.*\"}) *100/node_filesystem_size_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.*|xfs\",mountpoint !~\".*pod.*\"}",
             "format": "time_series",
             "instant": false,
             "interval": "",
@@ -3048,7 +3048,7 @@
             "refId": "A"
           },
           {
-            "expr": "node_filesystem_files_free{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.?|xfs\"} / node_filesystem_files{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.?|xfs\"}",
+            "expr": "node_filesystem_files_free{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.?|xfs\"} / node_filesystem_files{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.?|xfs\"}",
             "hide": true,
             "interval": "",
             "legendFormat": "Inodes：{{instance}}：{{mountpoint}}",
@@ -3174,7 +3174,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "node_netstat_Tcp_CurrEstab{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
+            "expr": "node_netstat_Tcp_CurrEstab{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
             "format": "time_series",
             "hide": false,
             "instant": false,
@@ -3185,7 +3185,7 @@
             "step": 20
           },
           {
-            "expr": "node_sockstat_TCP_tw{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
+            "expr": "node_sockstat_TCP_tw{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
             "format": "time_series",
             "interval": "",
             "intervalFactor": 1,
@@ -3193,7 +3193,7 @@
             "refId": "D"
           },
           {
-            "expr": "node_sockstat_sockets_used{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
+            "expr": "node_sockstat_sockets_used{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
             "hide": false,
             "interval": "30m",
             "intervalFactor": 1,
@@ -3201,52 +3201,52 @@
             "refId": "B"
           },
           {
-            "expr": "node_sockstat_UDP_inuse{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
+            "expr": "node_sockstat_UDP_inuse{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
             "interval": "",
             "legendFormat": "UDP_inuse",
             "refId": "C"
           },
           {
-            "expr": "node_sockstat_TCP_alloc{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
+            "expr": "node_sockstat_TCP_alloc{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
             "interval": "",
             "legendFormat": "TCP_alloc",
             "refId": "E"
           },
           {
-            "expr": "rate(node_netstat_Tcp_PassiveOpens{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
+            "expr": "rate(node_netstat_Tcp_PassiveOpens{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
             "hide": true,
             "interval": "",
             "legendFormat": "{{instance}}_Tcp_PassiveOpens",
             "refId": "G"
           },
           {
-            "expr": "rate(node_netstat_Tcp_ActiveOpens{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
+            "expr": "rate(node_netstat_Tcp_ActiveOpens{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
             "hide": true,
             "interval": "",
             "legendFormat": "{{instance}}_Tcp_ActiveOpens",
             "refId": "F"
           },
           {
-            "expr": "rate(node_netstat_Tcp_InSegs{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
+            "expr": "rate(node_netstat_Tcp_InSegs{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
             "interval": "",
             "legendFormat": "Tcp_InSegs",
             "refId": "H"
           },
           {
-            "expr": "rate(node_netstat_Tcp_OutSegs{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
+            "expr": "rate(node_netstat_Tcp_OutSegs{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
             "interval": "",
             "legendFormat": "Tcp_OutSegs",
             "refId": "I"
           },
           {
-            "expr": "rate(node_netstat_Tcp_RetransSegs{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
+            "expr": "rate(node_netstat_Tcp_RetransSegs{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
             "hide": false,
             "interval": "",
             "legendFormat": "Tcp_RetransSegs",
             "refId": "J"
           },
           {
-            "expr": "rate(node_netstat_TcpExt_ListenDrops{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
+            "expr": "rate(node_netstat_TcpExt_ListenDrops{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
             "hide": true,
             "interval": "",
             "legendFormat": "",
@@ -3371,7 +3371,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "node_filefd_allocated{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
+            "expr": "node_filefd_allocated{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}",
             "format": "time_series",
             "instant": false,
             "interval": "",
@@ -3380,14 +3380,14 @@
             "refId": "B"
           },
           {
-            "expr": "rate(node_context_switches_total{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
+            "expr": "rate(node_context_switches_total{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
             "interval": "",
             "intervalFactor": 5,
             "legendFormat": "switches",
             "refId": "A"
           },
           {
-            "expr": "  (node_filefd_allocated{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}/node_filefd_maximum{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}) *100",
+            "expr": "  (node_filefd_allocated{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}/node_filefd_maximum{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}) *100",
             "format": "time_series",
             "hide": true,
             "instant": false,
@@ -3505,7 +3505,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "rate(node_disk_read_time_seconds_total{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval]) / rate(node_disk_reads_completed_total{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
+            "expr": "rate(node_disk_read_time_seconds_total{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval]) / rate(node_disk_reads_completed_total{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
             "format": "time_series",
             "hide": false,
             "instant": false,
@@ -3515,7 +3515,7 @@
             "refId": "B"
           },
           {
-            "expr": "rate(node_disk_write_time_seconds_total{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval]) / rate(node_disk_writes_completed_total{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
+            "expr": "rate(node_disk_write_time_seconds_total{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval]) / rate(node_disk_writes_completed_total{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
             "format": "time_series",
             "hide": false,
             "instant": false,
@@ -3525,7 +3525,7 @@
             "refId": "C"
           },
           {
-            "expr": "rate(node_disk_io_time_seconds_total{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
+            "expr": "rate(node_disk_io_time_seconds_total{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
             "format": "time_series",
             "hide": true,
             "interval": "",
@@ -3535,7 +3535,7 @@
             "step": 10
           },
           {
-            "expr": "rate(node_disk_io_time_weighted_seconds_total{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
+            "expr": "rate(node_disk_io_time_weighted_seconds_total{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"}[$interval])",
             "format": "time_series",
             "hide": true,
             "interval": "",
@@ -3607,7 +3607,7 @@
             ]
           },
           "datasource": "Prometheus",
-          "definition": "label_values(node_cpu_seconds_total{deployment_id=\"{{ monitoring_id }}\"}, instance_name)",
+          "definition": "label_values(node_cpu_seconds_total{monitoring_id=\"{{ monitoring_id }}\"}, instance_name)",
           "error": null,
           "hide": 0,
           "includeAll": false,
@@ -3615,7 +3615,7 @@
           "multi": false,
           "name": "instance_name",
           "options": [],
-          "query": "label_values(node_cpu_seconds_total{deployment_id=\"{{ monitoring_id }}\"}, instance_name)",
+          "query": "label_values(node_cpu_seconds_total{monitoring_id=\"{{ monitoring_id }}\"}, instance_name)",
           "refresh": 1,
           "regex": "",
           "skipUrlSync": false,
@@ -3639,7 +3639,7 @@
             ]
           },
           "datasource": "Prometheus",
-          "definition": "label_values(node_network_info{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",device!~'tap.*|veth.*|br.*|docker.*|virbr.*|lo.*|cni.*'},device)",
+          "definition": "label_values(node_network_info{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",device!~'tap.*|veth.*|br.*|docker.*|virbr.*|lo.*|cni.*'},device)",
           "error": null,
           "hide": 0,
           "includeAll": true,
@@ -3648,7 +3648,7 @@
           "multiFormat": "regex values",
           "name": "device",
           "options": [],
-          "query": "label_values(node_network_info{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",device!~'tap.*|veth.*|br.*|docker.*|virbr.*|lo.*|cni.*'},device)",
+          "query": "label_values(node_network_info{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",device!~'tap.*|veth.*|br.*|docker.*|virbr.*|lo.*|cni.*'},device)",
           "refresh": 1,
           "regex": "",
           "skipUrlSync": false,
@@ -3723,7 +3723,7 @@
             "value": "/"
           },
           "datasource": "Prometheus",
-          "definition": "query_result(topk(1,sort_desc (max(node_filesystem_size_bytes{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.?|xfs\",mountpoint!~\".*pods.*\"}) by (mountpoint))))",
+          "definition": "query_result(topk(1,sort_desc (max(node_filesystem_size_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.?|xfs\",mountpoint!~\".*pods.*\"}) by (mountpoint))))",
           "error": null,
           "hide": 2,
           "includeAll": false,
@@ -3731,7 +3731,7 @@
           "multi": false,
           "name": "maxmount",
           "options": [],
-          "query": "query_result(topk(1,sort_desc (max(node_filesystem_size_bytes{deployment_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.?|xfs\",mountpoint!~\".*pods.*\"}) by (mountpoint))))",
+          "query": "query_result(topk(1,sort_desc (max(node_filesystem_size_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.?|xfs\",mountpoint!~\".*pods.*\"}) by (mountpoint))))",
           "refresh": 2,
           "regex": "/.*\\\"(.*)\\\".*/",
           "skipUrlSync": false,
@@ -3750,7 +3750,7 @@
             "value": ""
           },
           "datasource": "Prometheus",
-          "definition": "query_result(count(node_uname_info{deployment_id=\"{{ monitoring_id }}\"}))",
+          "definition": "query_result(count(node_uname_info{monitoring_id=\"{{ monitoring_id }}\"}))",
           "error": null,
           "hide": 2,
           "includeAll": false,
@@ -3758,7 +3758,7 @@
           "multi": false,
           "name": "total",
           "options": [],
-          "query": "query_result(count(node_uname_info{deployment_id=\"{{ monitoring_id }}\"}))",
+          "query": "query_result(count(node_uname_info{monitoring_id=\"{{ monitoring_id }}\"}))",
           "refresh": 1,
           "regex": "/{} (.*) .*/",
           "skipUrlSync": false,
