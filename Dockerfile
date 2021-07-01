@@ -17,4 +17,6 @@ COPY ./app.py /app
 
 COPY ./templates/* /app/templates/
 
-CMD [ "sh", "-c", "gunicorn -w ${GUNICORN_WORKERS} -b :${GRAFANA_REGISTRY_PORT} app:app" ]
+ENV FLASK_APP=app.py
+
+CMD [ "sh", "-c", "flask run --host=0.0.0.0 --port=${GRAFANA_REGISTRY_PORT} app:app" ]
