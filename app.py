@@ -38,7 +38,7 @@ def create_dashboards():
     user_name = user_info['name']
     json_data = request.json
 
-    if 'deployment_label' in json_data and 'deployment_label' in json_data:
+    if 'deployment_label' in json_data and 'monitoring_id' in json_data:
         deployment_label = json_data['deployment_label']
         monitoring_id = json_data['monitoring_id']
     else:
@@ -112,7 +112,7 @@ def delete_dashboards():
 
     json_data = request.json
 
-    if 'deployment_label' in json_data and 'deployment_label' in json_data:
+    if 'deployment_label' in json_data and 'monitoring_id' in json_data:
         monitoring_id = json_data['monitoring_id']
     else:
         return "Request must include deployment_label and monitoring_id\n", 403
