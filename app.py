@@ -45,7 +45,7 @@ def create_dashboards():
         return "Request must include deployment_label and monitoring_id\n", 403
 
     if not _check_user_deployment_availability(user_email, monitoring_id):
-        return "Deployment label already belongs to a different user\n", 403
+        return "Monitoring ID already belongs to a different user\n", 403
 
     if user_email not in dashboard_uids:
         dashboard_urls[user_email] = {}
