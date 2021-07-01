@@ -40,11 +40,11 @@ def create_dashboards():
 
     if 'deployment_label' in json_data and 'deployment_label' in json_data:
         deployment_label = json_data['deployment_label']
-        deployment_id = json_data['deployment_id']
+        monitoring_id = json_data['monitoring_id']
     else:
-        return "Request must include deployment_label and deployment_id\n", 403
+        return "Request must include deployment_label and monitoring_id\n", 403
 
-    if not _check_user_deployment_availability(user_email, deployment_id):
+    if not _check_user_deployment_availability(user_email, monitoring_id):
         return "Deployment label already belongs to a different user\n", 403
 
     if user_email not in dashboard_uids:
@@ -56,9 +56,9 @@ def create_dashboards():
             return "Could not register user in Grafana\n", 500
         user_ids[user_email] = user_id
 
-    dashboard_urls[user_email][deployment_id] = {}
-    dashboard_uids[user_email][deployment_id] = {}
-    dashboard_ids[user_email][deployment_id] = {}
+    dashboard_urls[user_email][monitoring_id] = {}
+    dashboard_uids[user_email][monitoring_id] = {}
+    dashboard_ids[user_email][monitoring_id] = {}
 
     for template_file in listdir(path.dirname(path.abspath(__file__)) + '/templates'):
         dashboard_type = path.splitext(path.splitext(template_file)[0])[0]
@@ -66,7 +66,7 @@ def create_dashboards():
 
         # Create of the dashboard with a dummy dashboard uid and no url in the links
         dashboard = template.render(deployment_label=deployment_label,
-                                    deployment_id=deployment_id,
+                                    monitoring_id=monitoring_id,
                                     dashboard_url="/",
                                     dashboard_uid="null")
         r = post('http://' + gf_endpoint + '/api/dashboards/db',
@@ -78,13 +78,13 @@ def create_dashboards():
             "url": r_json['url'],
             "id": str(r_json['id'])
         }
-        dashboard_urls[user_email][deployment_id][dashboard_type] = "http://" + gf_endpoint + dashboard_data["url"]
-        dashboard_uids[user_email][deployment_id][dashboard_type] = dashboard_data["uid"]
-        dashboard_ids[user_email][deployment_id][dashboard_type] = dashboard_data["id"]
+        dashboard_urls[user_email][monitoring_id][dashboard_type] = "http://" + gf_endpoint + dashboard_data["url"]
+        dashboard_uids[user_email][monitoring_id][dashboard_type] = dashboard_data["uid"]
+        dashboard_ids[user_email][monitoring_id][dashboard_type] = dashboard_data["id"]
 
         # Update the dashboard to include the dashboard url in the links and real uid
         dashboard = template.render(deployment_label=deployment_label,
-                                    deployment_id=deployment_id,
+                                    monitoring_id=monitoring_id,
                                     dashboard_url=dashboard_data["url"],
                                     dashboard_uid='"' + dashboard_data["uid"] + '"')
         post('http://' + gf_endpoint + '/api/dashboards/db',
@@ -113,22 +113,22 @@ def delete_dashboards():
     json_data = request.json
 
     if 'deployment_label' in json_data and 'deployment_label' in json_data:
-        deployment_id = json_data['deployment_id']
+        monitoring_id = json_data['monitoring_id']
     else:
-        return "Request must include deployment_label and deployment_id\n", 403
+        return "Request must include deployment_label and monitoring_id\n", 403
 
-    if user_email not in dashboard_uids or deployment_id not in dashboard_uids[user_email]:
-        return "Could not find the deployment_id in the user's list of dashboards\n", 404
-    for dashboard in dashboard_uids[user_email][deployment_id]:
+    if user_email not in dashboard_uids or monitoring_id not in dashboard_uids[user_email]:
+        return "Could not find the monitoring_id in the user's list of dashboards\n", 404
+    for dashboard in dashboard_uids[user_email][monitoring_id]:
         r = delete('http://' + gf_endpoint + '/api/dashboards/uid/' +
-                   dashboard_uids[user_email][deployment_id][dashboard],
+                   dashboard_uids[user_email][monitoring_id][dashboard],
                    auth=basicAuth(gf_admin_user, gf_admin_pw))
         if r.status_code != 200:
             return "Could not delete the dashboard " + dashboard + ": " + str(r.content)+"\n", r.status_code
 
-    dashboard_urls[user_email].pop(deployment_id)
-    dashboard_uids[user_email].pop(deployment_id)
-    dashboard_ids[user_email].pop(deployment_id)
+    dashboard_urls[user_email].pop(monitoring_id)
+    dashboard_uids[user_email].pop(monitoring_id)
+    dashboard_ids[user_email].pop(monitoring_id)
 
     return "Dashboards deleted\n", 200
 
@@ -150,8 +150,8 @@ def get_dashboards_user():
     return dashboard_urls[user_email], 200
 
 
-@app.route('/dashboards/deployment/<deployment_id>', methods=['GET'])
-def get_dashboards_deployment(deployment_id):
+@app.route('/dashboards/deployment/<monitoring_id>', methods=['GET'])
+def get_dashboards_deployment(monitoring_id):
     try:
         user_info = _token_info(_get_token(request))
     except Exception as e:
@@ -160,12 +160,12 @@ def get_dashboards_deployment(deployment_id):
         return "Access not authorized\n", 401
 
     user_email = user_info['email']
-    if not deployment_id:
-        return "Must provide the deployment_id\n", 403
-    if user_email not in dashboard_urls or deployment_id not in dashboard_urls[user_email]:
+    if not monitoring_id:
+        return "Must provide the monitoring_id\n", 403
+    if user_email not in dashboard_urls or monitoring_id not in dashboard_urls[user_email]:
         return "Could not find the deployment\n", 404
 
-    return dashboard_urls[user_email][deployment_id], 200
+    return dashboard_urls[user_email][monitoring_id], 200
 
 
 def _token_info(access_token) -> dict:
@@ -212,10 +212,10 @@ def _get_user_id(user_email, user_name):
     return None
 
 
-def _check_user_deployment_availability(user_email, deployment_id):
+def _check_user_deployment_availability(user_email, monitoring_id):
     for user in dashboard_uids:
         for deployment in dashboard_uids[user]:
-            if deployment_id == deployment and user != user_email:
+            if monitoring_id == deployment and user != user_email:
                 return False
     return True
 

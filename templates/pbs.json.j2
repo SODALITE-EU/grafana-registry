@@ -385,7 +385,7 @@
         ],
         "targets": [
           {
-            "expr": "pbs_job_cpu_n{deployment_id=\"{{ deployment_id }}\"}-0",
+            "expr": "pbs_job_cpu_n{deployment_id=\"{{ monitoring_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -394,7 +394,7 @@
             "refId": "A"
           },
           {
-            "expr": "pbs_job_state{deployment_id=\"{{ deployment_id }}\"}-0",
+            "expr": "pbs_job_state{deployment_id=\"{{ monitoring_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -403,7 +403,7 @@
             "refId": "B"
           },
           {
-            "expr": "pbs_job_priority{deployment_id=\"{{ deployment_id }}\"}-0",
+            "expr": "pbs_job_priority{deployment_id=\"{{ monitoring_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -412,7 +412,7 @@
             "refId": "C"
           },
           {
-            "expr": "pbs_job_walltime_used{deployment_id=\"{{ deployment_id }}\"}-0",
+            "expr": "pbs_job_walltime_used{deployment_id=\"{{ monitoring_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -421,7 +421,7 @@
             "refId": "D"
           },
           {
-            "expr": "pbs_job_walltime_used{deployment_id=\"{{ deployment_id }}\"}*100/pbs_job_walltime_max{deployment_id=\"{{ deployment_id }}\"}-0",
+            "expr": "pbs_job_walltime_used{deployment_id=\"{{ monitoring_id }}\"}*100/pbs_job_walltime_max{deployment_id=\"{{ monitoring_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -430,7 +430,7 @@
             "refId": "E"
           },
           {
-            "expr": "pbs_job_time_queued{deployment_id=\"{{ deployment_id }}\"}-0",
+            "expr": "pbs_job_time_queued{deployment_id=\"{{ monitoring_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -439,7 +439,7 @@
             "refId": "F"
           },
           {
-            "expr": "pbs_job_mem_virtual{deployment_id=\"{{ deployment_id }}\"}-0",
+            "expr": "pbs_job_mem_virtual{deployment_id=\"{{ monitoring_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -448,7 +448,7 @@
             "refId": "G"
           },
           {
-            "expr": "pbs_job_memory_physical{deployment_id=\"{{ deployment_id }}\"}-0",
+            "expr": "pbs_job_memory_physical{deployment_id=\"{{ monitoring_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -457,7 +457,7 @@
             "refId": "H"
           },
           {
-            "expr": "pbs_job_exit_status{deployment_id=\"{{ deployment_id }}\"}-0",
+            "expr": "pbs_job_exit_status{deployment_id=\"{{ monitoring_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -846,7 +846,7 @@
         ],
         "targets": [
           {
-            "expr": "pbs_queue_enabled{deployment_id=\"{{ deployment_id }}\"}-0",
+            "expr": "pbs_queue_enabled{deployment_id=\"{{ monitoring_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -855,7 +855,7 @@
             "refId": "A"
           },
           {
-            "expr": "pbs_queue_started{deployment_id=\"{{ deployment_id }}\"}-0",
+            "expr": "pbs_queue_started{deployment_id=\"{{ monitoring_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -864,7 +864,7 @@
             "refId": "B"
           },
           {
-            "expr": "pbs_queue_jobs_max{deployment_id=\"{{ deployment_id }}\"}-0",
+            "expr": "pbs_queue_jobs_max{deployment_id=\"{{ monitoring_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -873,7 +873,7 @@
             "refId": "C"
           },
           {
-            "expr": "pbs_queue_jobs_total{deployment_id=\"{{ deployment_id }}\"}-0",
+            "expr": "pbs_queue_jobs_total{deployment_id=\"{{ monitoring_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -882,7 +882,7 @@
             "refId": "D"
           },
           {
-            "expr": "pbs_queue_jobs_queued{deployment_id=\"{{ deployment_id }}\"}-0",
+            "expr": "pbs_queue_jobs_queued{deployment_id=\"{{ monitoring_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -891,7 +891,7 @@
             "refId": "E"
           },
           {
-            "expr": "pbs_queue_jobs_running{deployment_id=\"{{ deployment_id }}\"}-0",
+            "expr": "pbs_queue_jobs_running{deployment_id=\"{{ monitoring_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -900,7 +900,7 @@
             "refId": "F"
           },
           {
-            "expr": "pbs_queue_jobs_held{deployment_id=\"{{ deployment_id }}\"}-0",
+            "expr": "pbs_queue_jobs_held{deployment_id=\"{{ monitoring_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -909,7 +909,7 @@
             "refId": "G"
           },
           {
-            "expr": "pbs_queue_jobs_waiting{deployment_id=\"{{ deployment_id }}\"}-0",
+            "expr": "pbs_queue_jobs_waiting{deployment_id=\"{{ monitoring_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -918,7 +918,7 @@
             "refId": "H"
           },
           {
-            "expr": "pbs_queue_jobs_transit{deployment_id=\"{{ deployment_id }}\"}-0",
+            "expr": "pbs_queue_jobs_transit{deployment_id=\"{{ monitoring_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -927,7 +927,7 @@
             "refId": "I"
           },
           {
-            "expr": "pbs_queue_jobs_exiting{deployment_id=\"{{ deployment_id }}\"}-0",
+            "expr": "pbs_queue_jobs_exiting{deployment_id=\"{{ monitoring_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -936,7 +936,7 @@
             "refId": "J"
           },
           {
-            "expr": "pbs_queue_jobs_complete{deployment_id=\"{{ deployment_id }}\"}-0",
+            "expr": "pbs_queue_jobs_complete{deployment_id=\"{{ monitoring_id }}\"}-0",
             "format": "table",
             "hide": false,
             "instant": true,
@@ -1014,7 +1014,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "pbs_job_state{deployment_id=\"{{ deployment_id }}\",job_id=~\"$job_id\"}",
+            "expr": "pbs_job_state{deployment_id=\"{{ monitoring_id }}\",job_id=~\"$job_id\"}",
             "format": "time_series",
             "interval": "",
             "legendFormat": "$job_id",
@@ -1127,7 +1127,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "pbs_job_mem_virtual{deployment_id=\"{{ deployment_id }}\",job_id=~\"$job_id\"}",
+            "expr": "pbs_job_mem_virtual{deployment_id=\"{{ monitoring_id }}\",job_id=~\"$job_id\"}",
             "interval": "",
             "legendFormat": "Mem",
             "refId": "A"
@@ -1226,7 +1226,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "pbs_job_memory_physical{deployment_id=\"{{ deployment_id }}\",job_id=~\"$job_id\"}",
+            "expr": "pbs_job_memory_physical{deployment_id=\"{{ monitoring_id }}\",job_id=~\"$job_id\"}",
             "interval": "",
             "legendFormat": "Mem",
             "refId": "A"
@@ -1328,7 +1328,7 @@
         "pluginVersion": "7.3.7",
         "targets": [
           {
-            "expr": "pbs_job_walltime_used{deployment_id=\"{{ deployment_id }}\",job_id=~\"$job_id\"}/pbs_job_walltime_max{deployment_id=\"{{ deployment_id }}\",job_id=~\"$job_id\"}",
+            "expr": "pbs_job_walltime_used{deployment_id=\"{{ monitoring_id }}\",job_id=~\"$job_id\"}/pbs_job_walltime_max{deployment_id=\"{{ monitoring_id }}\",job_id=~\"$job_id\"}",
             "instant": true,
             "interval": "",
             "legendFormat": "$job_id",
@@ -1386,7 +1386,7 @@
         "pluginVersion": "7.3.7",
         "targets": [
           {
-            "expr": "pbs_job_time_queued{deployment_id=\"{{ deployment_id }}\",job_id=~\"$job_id\"}",
+            "expr": "pbs_job_time_queued{deployment_id=\"{{ monitoring_id }}\",job_id=~\"$job_id\"}",
             "interval": "",
             "legendFormat": "",
             "refId": "A"
@@ -1460,14 +1460,14 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "pbs_queue_enabled{deployment_id=\"{{ deployment_id }}\",queue_name=~\"$queue\"}",
+            "expr": "pbs_queue_enabled{deployment_id=\"{{ monitoring_id }}\",queue_name=~\"$queue\"}",
             "format": "time_series",
             "interval": "",
             "legendFormat": "Enabled",
             "refId": "A"
           },
           {
-            "expr": "pbs_queue_started{deployment_id=\"{{ deployment_id }}\",queue_name=~\"$queue\"}",
+            "expr": "pbs_queue_started{deployment_id=\"{{ monitoring_id }}\",queue_name=~\"$queue\"}",
             "format": "time_series",
             "interval": "",
             "legendFormat": "Started",
@@ -1591,49 +1591,49 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "pbs_queue_jobs_queued{deployment_id=\"{{ deployment_id }}\",queue_name=~\"$queue\"}",
+            "expr": "pbs_queue_jobs_queued{deployment_id=\"{{ monitoring_id }}\",queue_name=~\"$queue\"}",
             "interval": "",
             "legendFormat": "Queued",
             "refId": "B"
           },
           {
-            "expr": "pbs_queue_jobs_waiting{deployment_id=\"{{ deployment_id }}\",queue_name=~\"$queue\"}",
+            "expr": "pbs_queue_jobs_waiting{deployment_id=\"{{ monitoring_id }}\",queue_name=~\"$queue\"}",
             "interval": "",
             "legendFormat": "Waiting",
             "refId": "D"
           },
           {
-            "expr": "pbs_queue_jobs_running{deployment_id=\"{{ deployment_id }}\",queue_name=~\"$queue\"}",
+            "expr": "pbs_queue_jobs_running{deployment_id=\"{{ monitoring_id }}\",queue_name=~\"$queue\"}",
             "interval": "",
             "legendFormat": "Running",
             "refId": "A"
           },
           {
-            "expr": "pbs_queue_jobs_transit{deployment_id=\"{{ deployment_id }}\",queue_name=~\"$queue\"}",
+            "expr": "pbs_queue_jobs_transit{deployment_id=\"{{ monitoring_id }}\",queue_name=~\"$queue\"}",
             "interval": "",
             "legendFormat": "Transit",
             "refId": "E"
           },
           {
-            "expr": "pbs_queue_jobs_held{deployment_id=\"{{ deployment_id }}\",queue_name=~\"$queue\"}",
+            "expr": "pbs_queue_jobs_held{deployment_id=\"{{ monitoring_id }}\",queue_name=~\"$queue\"}",
             "interval": "",
             "legendFormat": "Held",
             "refId": "C"
           },
           {
-            "expr": "pbs_queue_jobs_exiting{deployment_id=\"{{ deployment_id }}\",queue_name=~\"$queue\"}",
+            "expr": "pbs_queue_jobs_exiting{deployment_id=\"{{ monitoring_id }}\",queue_name=~\"$queue\"}",
             "interval": "",
             "legendFormat": "Exiting",
             "refId": "F"
           },
           {
-            "expr": "(pbs_queue_jobs_max{deployment_id=\"{{ deployment_id }}\",queue_name=~\"$queue\"}+abs(pbs_queue_jobs_max{deployment_id=\"{{ deployment_id }}\",queue_name=~\"$queue\"}))/2*(1-pbs_queue_jobs_total{deployment_id=\"{{ deployment_id }}\",queue_name=~\"$queue\"}/pbs_queue_jobs_max{deployment_id=\"{{ deployment_id }}\",queue_name=~\"$queue\"})",
+            "expr": "(pbs_queue_jobs_max{deployment_id=\"{{ monitoring_id }}\",queue_name=~\"$queue\"}+abs(pbs_queue_jobs_max{deployment_id=\"{{ monitoring_id }}\",queue_name=~\"$queue\"}))/2*(1-pbs_queue_jobs_total{deployment_id=\"{{ monitoring_id }}\",queue_name=~\"$queue\"}/pbs_queue_jobs_max{deployment_id=\"{{ monitoring_id }}\",queue_name=~\"$queue\"})",
             "interval": "",
             "legendFormat": "Max",
             "refId": "H"
           },
           {
-            "expr": "pbs_queue_jobs_complete{deployment_id=\"{{ deployment_id }}\",queue_name=~\"$queue\"}",
+            "expr": "pbs_queue_jobs_complete{deployment_id=\"{{ monitoring_id }}\",queue_name=~\"$queue\"}",
             "interval": "",
             "legendFormat": "Complete",
             "refId": "G"
@@ -1698,7 +1698,7 @@
             "value": "2378.cloudserver"
           },
           "datasource": "Prometheus",
-          "definition": "label_values(pbs_job_state{deployment_id=\"{{ deployment_id }}\"}, job_id)",
+          "definition": "label_values(pbs_job_state{deployment_id=\"{{ monitoring_id }}\"}, job_id)",
           "error": null,
           "hide": 0,
           "includeAll": false,
@@ -1706,7 +1706,7 @@
           "multi": false,
           "name": "job_id",
           "options": [],
-          "query": "label_values(pbs_job_state{deployment_id=\"{{ deployment_id }}\"}, job_id)",
+          "query": "label_values(pbs_job_state{deployment_id=\"{{ monitoring_id }}\"}, job_id)",
           "refresh": 1,
           "regex": "",
           "skipUrlSync": false,
@@ -1725,7 +1725,7 @@
             "value": "batch"
           },
           "datasource": "Prometheus",
-          "definition": "label_values(pbs_queue_enabled{deployment_id=\"{{ deployment_id }}\"},queue_name)",
+          "definition": "label_values(pbs_queue_enabled{deployment_id=\"{{ monitoring_id }}\"},queue_name)",
           "error": null,
           "hide": 0,
           "includeAll": false,
@@ -1754,7 +1754,7 @@
               "value": "ssd"
             }
           ],
-          "query": "label_values(pbs_queue_enabled{deployment_id=\"{{ deployment_id }}\"},queue_name)",
+          "query": "label_values(pbs_queue_enabled{deployment_id=\"{{ monitoring_id }}\"},queue_name)",
           "refresh": 0,
           "regex": "",
           "skipUrlSync": false,
