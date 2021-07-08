@@ -1118,7 +1118,7 @@
             "refId": "D"
           },
           {
-            "expr": "(1 - ((node_memory_SwapFree_bytes{instance_name=~\"$instance_name\"} + 1)/ (node_memory_SwapTotal_bytes{instance_name=~\"$instance_name\"} + 1))) * 100",
+            "expr": "(1 - ((node_memory_SwapFree_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"} + 1)/ (node_memory_SwapTotal_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"} + 1))) * 100",
             "instant": true,
             "interval": "",
             "legendFormat": "Used SWAP",
