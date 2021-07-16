@@ -5,6 +5,7 @@ from requests import post, delete, get, Session, adapters
 from requests.auth import HTTPBasicAuth as basicAuth
 from jinja2 import Environment, PackageLoader
 from json import loads
+from urllib.parse import urlparse
 
 env = Environment(loader=PackageLoader("app"), autoescape=False)
 app = Flask(__name__)
@@ -15,6 +16,7 @@ user_ids = {}
 gf_endpoint = getenv("GF_ADDRESS", "grafana") + ':' + getenv("GF_PORT", "3000")
 gf_admin_user = getenv("GF_ADMIN_USER", "admin")
 gf_admin_pw = getenv("GF_ADMIN_PW", "admin")
+prom_endpoint = getenv("PROMETHEUS_ADDRESS", "prometheus") + ":" + getenv("PROMETHEUS_PORT", "9090")
 oidc_client_id = getenv("OIDC_CLIENT_ID", "sodalite-ide")
 oidc_client_secret = getenv("OIDC_CLIENT_SECRET", "")
 oidc_introspection_endpoint = getenv("OIDC_INTROSPECTION_ENDPOINT", "")
@@ -78,7 +80,7 @@ def create_dashboards():
             "url": r_json['url'],
             "id": str(r_json['id'])
         }
-        dashboard_urls[user_email][monitoring_id][dashboard_type] = "http://" + gf_endpoint + dashboard_data["url"]
+        dashboard_urls[user_email][monitoring_id][dashboard_type] = dashboard_data["url"]
         dashboard_uids[user_email][monitoring_id][dashboard_type] = dashboard_data["uid"]
         dashboard_ids[user_email][monitoring_id][dashboard_type] = dashboard_data["id"]
 
@@ -165,7 +167,7 @@ def get_dashboards_deployment(monitoring_id):
     if user_email not in dashboard_urls or monitoring_id not in dashboard_urls[user_email]:
         return "Could not find the deployment\n", 404
 
-    return dashboard_urls[user_email][monitoring_id], 200
+    return _active(dashboard_urls[user_email][monitoring_id], monitoring_id), 200
 
 
 def _token_info(access_token) -> dict:
@@ -225,3 +227,32 @@ def _get_token(r):
     if auth_header[0] == "Bearer":
         return auth_header[1]
     return ""
+
+
+def _active(urls, monitoring_id):
+    active_urls = {}
+    for exp_type in urls:
+        if _metric_exists(exp_type, monitoring_id):
+            active_urls[exp_type] = urls[exp_type]
+    return active_urls
+
+
+def _metric_exists(exp_type, monitoring_id):
+    metrics = {
+        "pbs": ["pbs_queue_enabled", "pbs_job_state"],
+        "slurm": ["slurm_partition_availability", "slurm_job_state"],
+        "node": ["node_cpu_seconds_total"]
+    }
+
+    for metric in metrics[exp_type]:
+        query = urlparse({
+            "query": metric + "{monitoring_id=\"" + monitoring_id + "\"}"
+        })
+        prometheus_endpoint = prom_endpoint + "/api/v1/query?" + query
+        prom_response = get(prometheus_endpoint)
+        if prom_response.ok:
+            json_prom = prom_response.json()
+            if json_prom["status"] == "success" and json_prom["data"]["result"]:
+                return True
+
+    return False
