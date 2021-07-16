@@ -5,7 +5,7 @@ from requests import post, delete, get, Session, adapters
 from requests.auth import HTTPBasicAuth as basicAuth
 from jinja2 import Environment, PackageLoader
 from json import loads
-from urllib.parse import urlparse
+from urllib.parse import urlencode
 
 env = Environment(loader=PackageLoader("app"), autoescape=False)
 app = Flask(__name__)
@@ -245,10 +245,10 @@ def _metric_exists(exp_type, monitoring_id):
     }
 
     for metric in metrics[exp_type]:
-        query = urlparse({
+        query = urlencode({
             "query": metric + "{monitoring_id=\"" + monitoring_id + "\"}"
         })
-        prometheus_endpoint = prom_endpoint + "/api/v1/query?" + query
+        prometheus_endpoint = "http://" + prom_endpoint + "/api/v1/query?" + query
         prom_response = get(prometheus_endpoint)
         if prom_response.ok:
             json_prom = prom_response.json()
