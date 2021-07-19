@@ -9,10 +9,6 @@ from urllib.parse import urlencode
 
 env = Environment(loader=PackageLoader("app"), autoescape=False)
 app = Flask(__name__)
-dashboard_urls = {}
-dashboard_uids = {}
-dashboard_ids = {}
-user_ids = {}
 gf_endpoint = getenv("GF_ADDRESS", "grafana") + ':' + getenv("GF_PORT", "3000")
 gf_admin_user = getenv("GF_ADMIN_USER", "admin")
 gf_admin_pw = getenv("GF_ADMIN_PW", "admin")
@@ -49,28 +45,23 @@ def create_dashboards():
     if not _check_user_deployment_availability(user_email, monitoring_id):
         return "Monitoring ID already belongs to a different user\n", 403
 
-    if user_email not in dashboard_uids:
-        dashboard_urls[user_email] = {}
-        dashboard_uids[user_email] = {}
-        dashboard_ids[user_email] = {}
-        user_id = _get_user_id(user_email, user_name)
-        if user_id is None:
-            return "Could not register user in Grafana\n", 500
-        user_ids[user_email] = user_id
+    user_id = _register_user(user_email, user_name)
+    if user_id is None:
+        return "Could not register user in Grafana\n", 500
 
-    dashboard_urls[user_email][monitoring_id] = {}
-    dashboard_uids[user_email][monitoring_id] = {}
-    dashboard_ids[user_email][monitoring_id] = {}
+    folder_id = _create_folder(user_email, user_id)
+    if not folder_id:
+        return "Could not create user folder\n", 500
 
     for template_file in listdir(path.dirname(path.abspath(__file__)) + '/templates'):
-        dashboard_type = path.splitext(path.splitext(template_file)[0])[0]
         template = env.get_template(template_file)
 
         # Create of the dashboard with a dummy dashboard uid and no url in the links
         dashboard = template.render(deployment_label=deployment_label,
                                     monitoring_id=monitoring_id,
                                     dashboard_url="/",
-                                    dashboard_uid="null")
+                                    dashboard_uid="null",
+                                    folder_id=folder_id)
         r = post('http://' + gf_endpoint + '/api/dashboards/db',
                  auth=basicAuth(gf_admin_user, gf_admin_pw),
                  json=loads(dashboard))
@@ -80,15 +71,13 @@ def create_dashboards():
             "url": r_json['url'],
             "id": str(r_json['id'])
         }
-        dashboard_urls[user_email][monitoring_id][dashboard_type] = dashboard_data["url"]
-        dashboard_uids[user_email][monitoring_id][dashboard_type] = dashboard_data["uid"]
-        dashboard_ids[user_email][monitoring_id][dashboard_type] = dashboard_data["id"]
 
         # Update the dashboard to include the dashboard url in the links and real uid
         dashboard = template.render(deployment_label=deployment_label,
                                     monitoring_id=monitoring_id,
                                     dashboard_url=dashboard_data["url"],
-                                    dashboard_uid='"' + dashboard_data["uid"] + '"')
+                                    dashboard_uid=dashboard_data["uid"],
+                                    folder_id=folder_id)
         post('http://' + gf_endpoint + '/api/dashboards/db',
              auth=basicAuth(gf_admin_user, gf_admin_pw),
              json=loads(dashboard))
@@ -96,7 +85,7 @@ def create_dashboards():
         # Set the permissions
         post('http://' + gf_endpoint + '/api/dashboards/id/' + dashboard_data["id"] + '/permissions',
              auth=basicAuth(gf_admin_user, gf_admin_pw),
-             json={"items": [{"userId": user_ids[user_email], "permission": 1}]})
+             json={"items": [{"userId": user_id, "permission": 1}]})
 
     return "Dashboards added\n", 200
 
@@ -119,18 +108,16 @@ def delete_dashboards():
     else:
         return "Request must include deployment_label and monitoring_id\n", 403
 
-    if user_email not in dashboard_uids or monitoring_id not in dashboard_uids[user_email]:
+    uids = _get_dashboard_data("uid", user_email, monitoring_id)
+
+    if not uids:
         return "Could not find the monitoring_id in the user's list of dashboards\n", 404
-    for dashboard in dashboard_uids[user_email][monitoring_id]:
-        r = delete('http://' + gf_endpoint + '/api/dashboards/uid/' +
-                   dashboard_uids[user_email][monitoring_id][dashboard],
+    for exp_type in uids:
+        uid = uids[exp_type]
+        r = delete('http://' + gf_endpoint + '/api/dashboards/uid/' + uid,
                    auth=basicAuth(gf_admin_user, gf_admin_pw))
         if r.status_code != 200:
-            return "Could not delete the dashboard " + dashboard + ": " + str(r.content)+"\n", r.status_code
-
-    dashboard_urls[user_email].pop(monitoring_id)
-    dashboard_uids[user_email].pop(monitoring_id)
-    dashboard_ids[user_email].pop(monitoring_id)
+            return "Could not delete the " + exp_type + " dashboard with uid " + uid + ": " + str(r.content)+"\n", r.status_code
 
     return "Dashboards deleted\n", 200
 
@@ -146,10 +133,13 @@ def get_dashboards_user():
 
     user_email = user_info['email']
 
-    if user_email not in dashboard_urls:
-        return "Could not find the user\n", 404
+    urls = _get_dashboard_data("url", user_email)
+    if not urls:
+        return "Could not find any dashboards for the providad user\n", 404
 
-    return dashboard_urls[user_email], 200
+    active_urls = _active(urls)
+
+    return active_urls, 200
 
 
 @app.route('/dashboards/deployment/<monitoring_id>', methods=['GET'])
@@ -164,10 +154,12 @@ def get_dashboards_deployment(monitoring_id):
     user_email = user_info['email']
     if not monitoring_id:
         return "Must provide the monitoring_id\n", 403
-    if user_email not in dashboard_urls or monitoring_id not in dashboard_urls[user_email]:
-        return "Could not find the deployment\n", 404
 
-    return _active(dashboard_urls[user_email][monitoring_id], monitoring_id), 200
+    urls = _get_dashboard_data("url", user_email, monitoring_id)
+    if not urls:
+        return "Could not find any dashboards for the provided user and monitoring_id\n", 404
+
+    return _active(urls, monitoring_id), 200
 
 
 def _token_info(access_token) -> dict:
@@ -194,7 +186,7 @@ def _token_info(access_token) -> dict:
     return json
 
 
-def _get_user_id(user_email, user_name):
+def _register_user(user_email, user_name):
     r = get('http://' + gf_endpoint + '/api/users/lookup?loginOrEmail=' + user_email,
             auth=basicAuth(gf_admin_user, gf_admin_pw), json={})
     if r.status_code == 200:
@@ -214,7 +206,17 @@ def _get_user_id(user_email, user_name):
     return None
 
 
+def _get_user_id(user_email):
+    query = {"loginOrEmail": user_email}
+    r = get('http://' + gf_endpoint + '/api/users/lookup',
+            auth=basicAuth(gf_admin_user, gf_admin_pw), params=query)
+    if r.status_code == 200:
+        return r.json()['id']
+    return None
+
+
 def _check_user_deployment_availability(user_email, monitoring_id):
+    dashboard_uids = _get_dashboard_data("uid")
     for user in dashboard_uids:
         for deployment in dashboard_uids[user]:
             if monitoring_id == deployment and user != user_email:
@@ -227,14 +229,6 @@ def _get_token(r):
     if auth_header[0] == "Bearer":
         return auth_header[1]
     return ""
-
-
-def _active(urls, monitoring_id):
-    active_urls = {}
-    for exp_type in urls:
-        if _metric_exists(exp_type, monitoring_id):
-            active_urls[exp_type] = urls[exp_type]
-    return active_urls
 
 
 def _metric_exists(exp_type, monitoring_id):
@@ -256,3 +250,120 @@ def _metric_exists(exp_type, monitoring_id):
                 return True
 
     return False
+
+
+def _active(urls, monitoring_id=""):
+    active_urls = {}
+    if monitoring_id != "":
+        for exp_type in urls:
+            if _metric_exists(exp_type, monitoring_id):
+                active_urls[exp_type] = urls[exp_type]
+    else:
+        for _monitoring_id in urls:
+            active_urls[_monitoring_id] = {}
+            for exp_type in urls[_monitoring_id]:
+                if _metric_exists(exp_type, _monitoring_id):
+                    active_urls[_monitoring_id][exp_type] = urls[_monitoring_id][exp_type]
+    return active_urls
+
+
+def _get_dashboard_data(data, user_email="", monitoring_id=""):
+
+    data_dict = {}
+
+    if user_email == "":
+        r = get('http://' + gf_endpoint + '/api/search', auth=basicAuth(gf_admin_user, gf_admin_pw))
+        if not r.ok:
+            return []
+        results = r.json()
+
+        for result in results:
+            if result["type"] == "dash-db":
+                if "folderTitle" in result:
+                    user_email = result["folderTitle"]
+                else:
+                    continue
+
+                if result["title"].split(':')[0]:                  
+                    dashboard_type = result["title"].split(':')[0].lower()
+                else:
+                    continue
+
+                monitoring_id = result["tags"][0]
+                if user_email not in data_dict:
+                    data_dict[user_email] = {monitoring_id: {dashboard_type: result[data]}}
+                elif monitoring_id not in data_dict[user_email]:
+                    data_dict[user_email][monitoring_id] = {dashboard_type: result[data]}
+                else:
+                    data_dict[user_email][monitoring_id][dashboard_type] = result[data]
+
+    elif monitoring_id != "":
+        query = {
+            "tag": monitoring_id,
+            "folderIds": _get_folder_id(user_email)
+        }
+        r = get('http://' + gf_endpoint + '/api/search', auth=basicAuth(gf_admin_user, gf_admin_pw), params=query)
+        if not r.ok:
+            return []
+        dashboards = r.json()
+
+        for dashboard in dashboards:
+            if dashboard["title"].split(':')[0]:                  
+                dashboard_type = dashboard["title"].split(':')[0].lower()
+            else:
+                continue
+            data_dict[dashboard_type] = dashboard[data]
+
+    else:
+        query = {
+            "folderIds": _get_folder_id(user_email)
+        }
+        r = get('http://' + gf_endpoint + '/api/search', auth=basicAuth(gf_admin_user, gf_admin_pw), params=query)
+        if not r.ok:
+            return []
+        dashboards = r.json()
+        for dashboard in dashboards:
+            if dashboard["tags"]:
+                monitoring_id = dashboard["tags"][0]
+            else:
+                continue
+            if dashboard["title"].split(':')[0]:                  
+                dashboard_type = dashboard["title"].split(':')[0].lower()
+            else:
+                continue
+            if monitoring_id in data_dict:
+                data_dict[monitoring_id][dashboard_type] = dashboard[data]
+            else:
+                data_dict[monitoring_id] = {dashboard_type: dashboard[data]}
+
+    return data_dict
+
+
+def _create_folder(email, user_id):
+    r = post('http://' + gf_endpoint + '/api/folders',
+             auth=basicAuth(gf_admin_user, gf_admin_pw),
+             json={"title": email})
+    folder_id = 0
+    if r.status_code == 200:
+        json = r.json()
+        folder_id = json["id"]
+        uid = json["uid"]
+        post('http://' + gf_endpoint + '/api/folders/' + uid + '/permissions',
+             auth=basicAuth(gf_admin_user, gf_admin_pw),
+             json={"items": [{"userId": user_id, "permission": 1}]})
+
+    elif r.status_code >= 400:
+        folders = get('http://' + gf_endpoint + '/api/folders', auth=basicAuth(gf_admin_user, gf_admin_pw)).json()
+        for folder in folders:
+            if folder["title"] == email:
+                folder_id = folder["id"]
+    return folder_id
+
+
+def _get_folder_id(email):
+    folder_id = None
+    folders = get('http://' + gf_endpoint + '/api/folders', auth=basicAuth(gf_admin_user, gf_admin_pw)).json()
+    for folder in folders:
+        if folder["title"] == email:
+            folder_id = folder["id"]
+    return folder_id

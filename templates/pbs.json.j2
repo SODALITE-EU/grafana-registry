@@ -14,7 +14,7 @@
       ]
     },
     "description": "Dashboard for the prometheus hpc exporters [PBS]",
-    "editable": true,
+    "editable": false,
     "gnetId": null,
     "graphTooltip": 0,
     "iteration": 1623340738734,
@@ -1684,10 +1684,10 @@
         }
       }
     ],
-    "refresh": "5m",
+    "refresh": "30s",
     "schemaVersion": 26,
     "style": "dark",
-    "tags": [],
+    "tags": ["{{ monitoring_id}}"],
     "templating": {
       "list": [
         {
@@ -1794,9 +1794,10 @@
         "30d"
       ]
     },
-    "timezone": "",
-    "title": "SODALITE-PBS-EXPORTERS-{{ monitoring_id }}"
+    "timezone": "browser",
+    "title": "PBS: {{ monitoring_id }}"
   },
-  "dashboard.uid": {{ dashboard_uid }},
-  "overwrite": true
+  "dashboard.uid": "{{ dashboard_uid }}",
+  "overwrite": true,
+  "folderId": {{ folder_id }}
 }

@@ -14,7 +14,7 @@
       ]
     },
     "description": "Dashboard for the prometheus node exporters",
-    "editable": true,
+    "editable": false,
     "gnetId": 11074,
     "graphTooltip": 0,
     "iteration": 1623141173302,
@@ -3588,10 +3588,10 @@
         }
       }
     ],
-    "refresh": "",
+    "refresh": "30s",
     "schemaVersion": 26,
     "style": "dark",
-    "tags": [],
+    "tags": ["{{ monitoring_id}}"],
     "templating": {
       "list": [
         {
@@ -3772,7 +3772,7 @@
       ]
     },
     "time": {
-      "from": "now-1h",
+      "from": "now-3h",
       "to": "now"
     },
     "timepicker": {
@@ -3799,8 +3799,9 @@
       ]
     },
     "timezone": "browser",
-    "title": "SODALITE-NODE-EXPORTERS-{{ monitoring_id }}"
+    "title": "NODE: {{ monitoring_id }}"
   },
-  "dashboard.uid": {{ dashboard_uid }},
-  "overwrite": true
+  "dashboard.uid": "{{ dashboard_uid }}",
+  "overwrite": true,
+  "folderId": {{ folder_id }}
 }
