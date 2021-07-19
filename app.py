@@ -117,7 +117,8 @@ def delete_dashboards():
         r = delete('http://' + gf_endpoint + '/api/dashboards/uid/' + uid,
                    auth=basicAuth(gf_admin_user, gf_admin_pw))
         if r.status_code != 200:
-            return "Could not delete the " + exp_type + " dashboard with uid " + uid + ": " + str(r.content)+"\n", r.status_code
+            return ("Could not delete the " + exp_type + " dashboard with uid " + uid + ": " + str(r.content)+"\n",
+                    r.status_code)
 
     return "Dashboards deleted\n", 200
 
@@ -269,74 +270,13 @@ def _active(urls, monitoring_id=""):
 
 def _get_dashboard_data(data, user_email="", monitoring_id=""):
 
-    data_dict = {}
-
     if user_email == "":
-        r = get('http://' + gf_endpoint + '/api/search', auth=basicAuth(gf_admin_user, gf_admin_pw))
-        if not r.ok:
-            return []
-        results = r.json()
+        return _get_dashboard_data_full(data)
 
-        for result in results:
-            if result["type"] == "dash-db":
-                if "folderTitle" in result:
-                    user_email = result["folderTitle"]
-                else:
-                    continue
+    if monitoring_id == "":
+        return _get_dashboard_data_user(data, user_email)
 
-                if result["title"].split(':')[0]:                  
-                    dashboard_type = result["title"].split(':')[0].lower()
-                else:
-                    continue
-
-                monitoring_id = result["tags"][0]
-                if user_email not in data_dict:
-                    data_dict[user_email] = {monitoring_id: {dashboard_type: result[data]}}
-                elif monitoring_id not in data_dict[user_email]:
-                    data_dict[user_email][monitoring_id] = {dashboard_type: result[data]}
-                else:
-                    data_dict[user_email][monitoring_id][dashboard_type] = result[data]
-
-    elif monitoring_id != "":
-        query = {
-            "tag": monitoring_id,
-            "folderIds": _get_folder_id(user_email)
-        }
-        r = get('http://' + gf_endpoint + '/api/search', auth=basicAuth(gf_admin_user, gf_admin_pw), params=query)
-        if not r.ok:
-            return []
-        dashboards = r.json()
-
-        for dashboard in dashboards:
-            if dashboard["title"].split(':')[0]:                  
-                dashboard_type = dashboard["title"].split(':')[0].lower()
-            else:
-                continue
-            data_dict[dashboard_type] = dashboard[data]
-
-    else:
-        query = {
-            "folderIds": _get_folder_id(user_email)
-        }
-        r = get('http://' + gf_endpoint + '/api/search', auth=basicAuth(gf_admin_user, gf_admin_pw), params=query)
-        if not r.ok:
-            return []
-        dashboards = r.json()
-        for dashboard in dashboards:
-            if dashboard["tags"]:
-                monitoring_id = dashboard["tags"][0]
-            else:
-                continue
-            if dashboard["title"].split(':')[0]:                  
-                dashboard_type = dashboard["title"].split(':')[0].lower()
-            else:
-                continue
-            if monitoring_id in data_dict:
-                data_dict[monitoring_id][dashboard_type] = dashboard[data]
-            else:
-                data_dict[monitoring_id] = {dashboard_type: dashboard[data]}
-
-    return data_dict
+    return _get_dashboard_data_monitoring_id(data, user_email, monitoring_id)
 
 
 def _create_folder(email, user_id):
@@ -367,3 +307,83 @@ def _get_folder_id(email):
         if folder["title"] == email:
             folder_id = folder["id"]
     return folder_id
+
+
+def _get_dashboard_data_full(data):
+    data_dict = {}
+    r = get('http://' + gf_endpoint + '/api/search', auth=basicAuth(gf_admin_user, gf_admin_pw))
+    if not r.ok:
+        return []
+    results = r.json()
+
+    for result in results:
+        if result["type"] == "dash-db":
+            if "folderTitle" in result:
+                user_email = result["folderTitle"]
+            else:
+                continue
+
+            if result["title"].split(':')[0]:
+                dashboard_type = result["title"].split(':')[0].lower()
+            else:
+                continue
+
+            if result["tags"] and len(result["tags"]) > 1:
+                monitoring_id = result["tags"][1]
+            else:
+                continue
+            if user_email not in data_dict:
+                data_dict[user_email] = {monitoring_id: {dashboard_type: result[data]}}
+            elif monitoring_id not in data_dict[user_email]:
+                data_dict[user_email][monitoring_id] = {dashboard_type: result[data]}
+            else:
+                data_dict[user_email][monitoring_id][dashboard_type] = result[data]
+
+    return data_dict
+
+
+def _get_dashboard_data_user(data, user_email):
+    data_dict = {}
+    query = {
+        "folderIds": _get_folder_id(user_email)
+    }
+    r = get('http://' + gf_endpoint + '/api/search', auth=basicAuth(gf_admin_user, gf_admin_pw), params=query)
+    if not r.ok:
+        return []
+    dashboards = r.json()
+    for dashboard in dashboards:
+        if dashboard["tags"] and len(dashboard["tags"]) > 1:
+            monitoring_id = dashboard["tags"][1]
+        else:
+            continue
+        if dashboard["title"].split(':')[0]:
+            dashboard_type = dashboard["title"].split(':')[0].lower()
+        else:
+            continue
+        if monitoring_id in data_dict:
+            data_dict[monitoring_id][dashboard_type] = dashboard[data]
+        else:
+            data_dict[monitoring_id] = {dashboard_type: dashboard[data]}
+
+    return data_dict
+
+
+def _get_dashboard_data_monitoring_id(data, user_email, monitoring_id):
+    data_dict = {}
+    query = {
+        "tag": monitoring_id,
+        "folderIds": _get_folder_id(user_email)
+    }
+    r = get('http://' + gf_endpoint + '/api/search', auth=basicAuth(gf_admin_user, gf_admin_pw), params=query)
+    if not r.ok:
+        return []
+    dashboards = r.json()
+
+    for dashboard in dashboards:
+        if dashboard["title"].split(':')[0]:
+            dashboard_type = dashboard["title"].split(':')[0].lower()
+        else:
+            continue
+        data_dict[dashboard_type] = dashboard[data]
+
+    return data_dict
