@@ -14,7 +14,7 @@
       ]
     },
     "description": "Dashboard for the prometheus node exporters",
-    "editable": true,
+    "editable": false,
     "gnetId": 11074,
     "graphTooltip": 0,
     "iteration": 1623141173302,
@@ -31,7 +31,7 @@
         },
         "id": 187,
         "panels": [],
-        "title": "Resource Overview (associated Deployment)，Instance：$instance_name，IP Address：$node",
+        "title": "Resource Overview (Deployment: {{ deployment_label }})",
         "type": "row"
       },
       {
@@ -1009,7 +1009,7 @@
         "pluginVersion": "7.3.7",
         "targets": [
           {
-            "expr": "avg(time() - node_boot_time_seconds{instance_name=~\"$instance_name\"})",
+            "expr": "avg(time() - node_boot_time_seconds{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"})",
             "format": "time_series",
             "hide": false,
             "instant": true,
@@ -1088,14 +1088,14 @@
         "pluginVersion": "7.3.7",
         "targets": [
           {
-            "expr": "100 - (avg(rate(node_cpu_seconds_total{instance_name=~\"$instance_name\",mode=\"idle\"}[$interval])) * 100)",
+            "expr": "100 - (avg(rate(node_cpu_seconds_total{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",mode=\"idle\"}[$interval])) * 100)",
             "instant": true,
             "interval": "",
             "legendFormat": "CPU Busy",
             "refId": "A"
           },
           {
-            "expr": "avg(rate(node_cpu_seconds_total{instance_name=~\"$instance_name\",mode=\"iowait\"}[$interval])) * 100",
+            "expr": "avg(rate(node_cpu_seconds_total{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",mode=\"iowait\"}[$interval])) * 100",
             "hide": true,
             "instant": true,
             "interval": "",
@@ -1103,14 +1103,14 @@
             "refId": "C"
           },
           {
-            "expr": "(1 - (node_memory_MemAvailable_bytes{instance_name=~\"$instance_name\"} / (node_memory_MemTotal_bytes{instance_name=~\"$instance_name\"})))* 100",
+            "expr": "(1 - (node_memory_MemAvailable_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"} / (node_memory_MemTotal_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"})))* 100",
             "instant": true,
             "interval": "",
             "legendFormat": "Used RAM Memory",
             "refId": "B"
           },
           {
-            "expr": "(node_filesystem_size_bytes{instance=~'$node',fstype=~\"ext.*|xfs\",mountpoint=\"$maxmount\"}-node_filesystem_free_bytes{instance=~'$node',fstype=~\"ext.*|xfs\",mountpoint=\"$maxmount\"})*100 /(node_filesystem_avail_bytes {instance=~'$node',fstype=~\"ext.*|xfs\",mountpoint=\"$maxmount\"}+(node_filesystem_size_bytes{instance=~'$node',fstype=~\"ext.*|xfs\",mountpoint=\"$maxmount\"}-node_filesystem_free_bytes{instance=~'$node',fstype=~\"ext.*|xfs\",mountpoint=\"$maxmount\"}))",
+            "expr": "(node_filesystem_size_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.*|xfs\",mountpoint=\"$maxmount\"}-node_filesystem_free_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.*|xfs\",mountpoint=\"$maxmount\"})*100 /(node_filesystem_avail_bytes {monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.*|xfs\",mountpoint=\"$maxmount\"}+(node_filesystem_size_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.*|xfs\",mountpoint=\"$maxmount\"}-node_filesystem_free_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\",fstype=~\"ext.*|xfs\",mountpoint=\"$maxmount\"}))",
             "hide": false,
             "instant": true,
             "interval": "",
@@ -1118,7 +1118,7 @@
             "refId": "D"
           },
           {
-            "expr": "(1 - ((node_memory_SwapFree_bytes{instance_name=~\"$instance_name\"} + 1)/ (node_memory_SwapTotal_bytes{instance_name=~\"$instance_name\"} + 1))) * 100",
+            "expr": "(1 - ((node_memory_SwapFree_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"} + 1)/ (node_memory_SwapTotal_bytes{monitoring_id=\"{{ monitoring_id }}\",instance_name=~\"$instance_name\"} + 1))) * 100",
             "instant": true,
             "interval": "",
             "legendFormat": "Used SWAP",
@@ -3588,10 +3588,10 @@
         }
       }
     ],
-    "refresh": "",
+    "refresh": "30s",
     "schemaVersion": 26,
     "style": "dark",
-    "tags": [],
+    "tags": ["{{ deployment_label }}", "{{ monitoring_id}}"],
     "templating": {
       "list": [
         {
@@ -3772,7 +3772,7 @@
       ]
     },
     "time": {
-      "from": "now-1h",
+      "from": "now-3h",
       "to": "now"
     },
     "timepicker": {
@@ -3799,8 +3799,9 @@
       ]
     },
     "timezone": "browser",
-    "title": "SODALITE-NODE-EXPORTERS-{{ monitoring_id }}"
+    "title": "NODE: {{ monitoring_id }}"
   },
-  "dashboard.uid": {{ dashboard_uid }},
-  "overwrite": true
+  "dashboard.uid": "{{ dashboard_uid }}",
+  "overwrite": true,
+  "folderId": {{ folder_id }}
 }
