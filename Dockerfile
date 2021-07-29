@@ -19,4 +19,4 @@ COPY ./templates/* /app/templates/
 
 ENV FLASK_APP=app.py
 
-CMD [ "sh", "-c", "flask run --host=0.0.0.0 --port=${GRAFANA_REGISTRY_PORT}" ]
+CMD [ "sh", "-c", "flask run --host=0.0.0.0" ]
