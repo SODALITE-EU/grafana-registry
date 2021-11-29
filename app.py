@@ -53,7 +53,11 @@ def create_dashboards():
     if not folder_id:
         return "Could not create user folder\n", 500
 
+    _add_deployment_to_accounting(monitoring_id, user_email, folder_id)
+
     for template_file in listdir(path.dirname(path.abspath(__file__)) + '/templates'):
+        if 'accounting.json.j2' in template_file:
+            continue
         template = env.get_template(template_file)
 
         # Create of the dashboard with a dummy dashboard uid and no url in the links
@@ -156,6 +160,9 @@ def get_dashboards_deployment(monitoring_id):
     if not monitoring_id:
         return "Must provide the monitoring_id\n", 403
 
+    if not user_email:
+        return "User email could not be found\n", 403
+
     urls = _get_dashboard_data("url", user_email, monitoring_id)
     if not urls:
         return "Could not find any dashboards for the provided user and monitoring_id\n", 404
@@ -207,14 +214,58 @@ def _register_user(user_email, user_name):
     return None
 
 
-def _get_user_id(user_email):
-    query = {"loginOrEmail": user_email}
-    r = get('http://' + gf_endpoint + '/api/users/lookup',
-            auth=basicAuth(gf_admin_user, gf_admin_pw), params=query)
-    if r.status_code == 200:
-        return r.json()['id']
-    return None
+def _add_deployment_to_accounting(monitoring_id, user_id, folder_id):
+    headers = {'Content-type': 'application/json'}
+    r = get('http://' + gf_endpoint + '/api/search?folderIds={id}&tags={tags}&limit=1&type=dash-db&query='.format(id=folder_id, tags="ACCOUNTING"),
+            auth=basicAuth(gf_admin_user, gf_admin_pw), headers=headers)
+    if r.ok:
+        accounting_dashboard = r.json()[0]
+        if accounting_dashboard:
+            dashboard_uid = accounting_dashboard['uid']
+            monitoring_ids = _get_monitoring_ids_accounting(dashboard_uid) + ',' + monitoring_id
+            r = delete('http://' + gf_endpoint + '/api/dashboards/uid/' + dashboard_uid,
+                   auth=basicAuth(gf_admin_user, gf_admin_pw))
+        else:
+            monitoring_ids = monitoring_id
+        _create_accounting_dashboard(monitoring_ids, user_id, folder_id)
 
+
+def _get_monitoring_ids_accounting(dashboard_uid):
+    # TODO: Add
+    return monitoring_ids
+
+
+def _create_accounting_dashboard(monitoring_ids, user_id, folder_id):
+    template = env.get_template('/templates/accounting.json.j2')
+
+    # Create of the dashboard with a dummy dashboard uid and no url in the links
+    dashboard = template.render(monitoring_ids=monitoring_ids,
+                                dashboard_url="/",
+                                dashboard_uid="null",
+                                folder_id=folder_id)
+    r = post('http://' + gf_endpoint + '/api/dashboards/db',
+                auth=basicAuth(gf_admin_user, gf_admin_pw),
+                json=loads(dashboard))
+    r_json = r.json()
+    dashboard_data = {
+        "uid": r_json['uid'],
+        "url": r_json['url'],
+        "id": str(r_json['id'])
+    }
+
+    # Update the dashboard to include the dashboard url in the links and real uid
+    dashboard = template.render(monitoring_ids=monitoring_ids,
+                                dashboard_url=dashboard_data["url"],
+                                dashboard_uid=dashboard_data["uid"],
+                                folder_id=folder_id)
+    post('http://' + gf_endpoint + '/api/dashboards/db',
+            auth=basicAuth(gf_admin_user, gf_admin_pw),
+            json=loads(dashboard))
+
+    # Set the permissions
+    post('http://' + gf_endpoint + '/api/dashboards/id/' + dashboard_data["id"] + '/permissions',
+            auth=basicAuth(gf_admin_user, gf_admin_pw),
+            json={"items": [{"userId": user_id, "permission": 1}]})
 
 def _check_user_deployment_availability(user_email, monitoring_id):
     dashboard_uids = _get_dashboard_data("uid")
