@@ -216,15 +216,15 @@ def _register_user(user_email, user_name):
 
 def _add_deployment_to_accounting(monitoring_id, user_id, folder_id):
     headers = {'Content-type': 'application/json'}
-    r = get('http://' + gf_endpoint + '/api/search?folderIds={id}&tags={tags}&limit=1&type=dash-db&query='.format(id=folder_id, tags="ACCOUNTING"),
-            auth=basicAuth(gf_admin_user, gf_admin_pw), headers=headers)
+    r = get('http://' + gf_endpoint + '/api/search?folderIds={id}&tags={tags}&limit=1&type=dash-db&query='.format(
+            id=folder_id, tags="ACCOUNTING"), auth=basicAuth(gf_admin_user, gf_admin_pw), headers=headers)
     if r.ok:
         accounting_dashboard = r.json()[0]
         if accounting_dashboard:
             dashboard_uid = accounting_dashboard['uid']
             monitoring_ids = _get_monitoring_ids_accounting(dashboard_uid) + ',' + monitoring_id
             r = delete('http://' + gf_endpoint + '/api/dashboards/uid/' + dashboard_uid,
-                   auth=basicAuth(gf_admin_user, gf_admin_pw))
+                       auth=basicAuth(gf_admin_user, gf_admin_pw))
         else:
             monitoring_ids = monitoring_id
         _create_accounting_dashboard(monitoring_ids, user_id, folder_id)
@@ -244,8 +244,8 @@ def _create_accounting_dashboard(monitoring_ids, user_id, folder_id):
                                 dashboard_uid="null",
                                 folder_id=folder_id)
     r = post('http://' + gf_endpoint + '/api/dashboards/db',
-                auth=basicAuth(gf_admin_user, gf_admin_pw),
-                json=loads(dashboard))
+             auth=basicAuth(gf_admin_user, gf_admin_pw),
+             json=loads(dashboard))
     r_json = r.json()
     dashboard_data = {
         "uid": r_json['uid'],
@@ -259,13 +259,14 @@ def _create_accounting_dashboard(monitoring_ids, user_id, folder_id):
                                 dashboard_uid=dashboard_data["uid"],
                                 folder_id=folder_id)
     post('http://' + gf_endpoint + '/api/dashboards/db',
-            auth=basicAuth(gf_admin_user, gf_admin_pw),
-            json=loads(dashboard))
+         auth=basicAuth(gf_admin_user, gf_admin_pw),
+         json=loads(dashboard))
 
     # Set the permissions
     post('http://' + gf_endpoint + '/api/dashboards/id/' + dashboard_data["id"] + '/permissions',
-            auth=basicAuth(gf_admin_user, gf_admin_pw),
-            json={"items": [{"userId": user_id, "permission": 1}]})
+         auth=basicAuth(gf_admin_user, gf_admin_pw),
+         json={"items": [{"userId": user_id, "permission": 1}]})
+
 
 def _check_user_deployment_availability(user_email, monitoring_id):
     dashboard_uids = _get_dashboard_data("uid")
