@@ -2,7 +2,7 @@ pipeline {
     agent { label 'docker-slave' }
     environment {
         // CI-CD vars
-        docker_registry_ip = credentials('jenkins-docker-registry-ip')
+        // docker_registry_ip = credentials('jenkins-docker-registry-ip')
         // When triggered from git tag, $BRANCH_NAME is actually GIT's tag_name
         TAG_SEM_VER_COMPLIANT = """${sh(
                 returnStdout: true,
@@ -67,20 +67,19 @@ pipeline {
                 sh "cd CI-CD && ./make_docker.sh build grafana-registry"
             }
         }
-        stage('Push grafana-registry to sodalite-private-registry') {
-            // Push during staging and production
+        stage('Push grafana-registry to DockerHub for staging') {
             when {
                 allOf {
                     expression{tag "*"}
                     expression{
-                        TAG_STAGING == 'true' || TAG_PRODUCTION == 'true'
+                        TAG_STAGING == 'true'
                     }
                 }
             }
             steps {
                 withDockerRegistry(credentialsId: 'jenkins-sodalite.docker_token', url: '') {
                     sh  """#!/bin/bash
-                        ./CI-CD/make_docker.sh push grafana-registry staging
+                        ./CI-CD/make_docker.sh push grafana-registry sodaliteh2020 staging
                         """
                 }
             }
@@ -97,7 +96,7 @@ pipeline {
              }
             steps {
                 withDockerRegistry(credentialsId: 'jenkins-sodalite.docker_token', url: '') {
-                    sh "./CI-CD/make_docker.sh push grafana-registry production"
+                    sh "./CI-CD/make_docker.sh push grafana-registry sodaliteh2020 production"
                 }
             }
         }
