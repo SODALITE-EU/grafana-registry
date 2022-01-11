@@ -18,6 +18,7 @@ oidc_client_id = getenv("OIDC_CLIENT_ID", "sodalite-ide")
 oidc_client_secret = getenv("OIDC_CLIENT_SECRET", "")
 oidc_introspection_endpoint = getenv("OIDC_INTROSPECTION_ENDPOINT", "")
 tls = "s" if getenv("GF_TLS", "") else ""
+gf_endpoint = gf_endpoint if gf_endpoint.startswith('http') else 'http' + tls + '://' + gf_endpoint
 
 session = Session()
 adapter = adapters.HTTPAdapter(pool_connections=100, pool_maxsize=100)
@@ -64,7 +65,7 @@ def create_dashboards():
                                     dashboard_url="/",
                                     dashboard_uid="null",
                                     folder_id=folder_id)
-        r = post('http' + tls + '://' + gf_endpoint + '/api/dashboards/db',
+        r = post(gf_endpoint + '/api/dashboards/db',
                  auth=basicAuth(gf_admin_user, gf_admin_pw),
                  json=loads(dashboard))
         r_json = r.json()
@@ -80,12 +81,12 @@ def create_dashboards():
                                     dashboard_url=dashboard_data["url"],
                                     dashboard_uid=dashboard_data["uid"],
                                     folder_id=folder_id)
-        post('http' + tls + '://' + gf_endpoint + '/api/dashboards/db',
+        post(gf_endpoint + '/api/dashboards/db',
              auth=basicAuth(gf_admin_user, gf_admin_pw),
              json=loads(dashboard))
 
         # Set the permissions
-        post('http' + tls + '://' + gf_endpoint + '/api/dashboards/id/' + dashboard_data["id"] + '/permissions',
+        post(gf_endpoint + '/api/dashboards/id/' + dashboard_data["id"] + '/permissions',
              auth=basicAuth(gf_admin_user, gf_admin_pw),
              json={"items": [{"userId": user_id, "permission": 1}]})
 
@@ -116,7 +117,7 @@ def delete_dashboards():
         return "Could not find the monitoring_id in the user's list of dashboards\n", 404
     for exp_type in uids:
         uid = uids[exp_type]
-        r = delete('http' + tls + '://' + gf_endpoint + '/api/dashboards/uid/' + uid,
+        r = delete(gf_endpoint + '/api/dashboards/uid/' + uid,
                    auth=basicAuth(gf_admin_user, gf_admin_pw))
         if r.status_code != 200:
             return ("Could not delete the " + exp_type + " dashboard with uid " + uid + ": " + str(r.content)+"\n",
@@ -190,13 +191,13 @@ def _token_info(access_token) -> dict:
 
 
 def _register_user(user_email, user_name):
-    r = get('http' + tls + '://' + gf_endpoint + '/api/users/lookup?loginOrEmail=' + user_email,
+    r = get(gf_endpoint + '/api/users/lookup?loginOrEmail=' + user_email,
             auth=basicAuth(gf_admin_user, gf_admin_pw), json={})
     if r.status_code == 200:
         return r.json()['id']
     if r.status_code == 404:
         # If the user isn't registered, register it.
-        r = post('http' + tls + '://' + gf_endpoint + '/api/admin/users',
+        r = post(gf_endpoint + '/api/admin/users',
                  auth=basicAuth(gf_admin_user, gf_admin_pw), json={
                     "name": user_name,
                     "email": user_email,
@@ -211,7 +212,7 @@ def _register_user(user_email, user_name):
 
 def _get_user_id(user_email):
     query = {"loginOrEmail": user_email}
-    r = get('http' + tls + '://' + gf_endpoint + '/api/users/lookup',
+    r = get(gf_endpoint + '/api/users/lookup',
             auth=basicAuth(gf_admin_user, gf_admin_pw), params=query)
     if r.status_code == 200:
         return r.json()['id']
@@ -282,7 +283,7 @@ def _get_dashboard_data(data, user_email="", monitoring_id=""):
 
 
 def _create_folder(email, user_id):
-    r = post('http' + tls + '://' + gf_endpoint + '/api/folders',
+    r = post(gf_endpoint + '/api/folders',
              auth=basicAuth(gf_admin_user, gf_admin_pw),
              json={"title": email})
     folder_id = 0
@@ -290,12 +291,12 @@ def _create_folder(email, user_id):
         json = r.json()
         folder_id = json["id"]
         uid = json["uid"]
-        post('http' + tls + '://' + gf_endpoint + '/api/folders/' + uid + '/permissions',
+        post(gf_endpoint + '/api/folders/' + uid + '/permissions',
              auth=basicAuth(gf_admin_user, gf_admin_pw),
              json={"items": [{"userId": user_id, "permission": 1}]})
 
     elif r.status_code >= 400:
-        folders = get('http' + tls + '://' + gf_endpoint + '/api/folders', auth=basicAuth(gf_admin_user, gf_admin_pw)).json()
+        folders = get(gf_endpoint + '/api/folders', auth=basicAuth(gf_admin_user, gf_admin_pw)).json()
         for folder in folders:
             if folder["title"] == email:
                 folder_id = folder["id"]
@@ -304,7 +305,7 @@ def _create_folder(email, user_id):
 
 def _get_folder_id(email):
     folder_id = None
-    folders = get('http' + tls + '://' + gf_endpoint + '/api/folders', auth=basicAuth(gf_admin_user, gf_admin_pw)).json()
+    folders = get(gf_endpoint + '/api/folders', auth=basicAuth(gf_admin_user, gf_admin_pw)).json()
     for folder in folders:
         if folder["title"] == email:
             folder_id = folder["id"]
@@ -313,7 +314,7 @@ def _get_folder_id(email):
 
 def _get_dashboard_data_full(data):
     data_dict = {}
-    r = get('http' + tls + '://' + gf_endpoint + '/api/search', auth=basicAuth(gf_admin_user, gf_admin_pw))
+    r = get(gf_endpoint + '/api/search', auth=basicAuth(gf_admin_user, gf_admin_pw))
     if not r.ok:
         return []
     results = r.json()
@@ -349,7 +350,7 @@ def _get_dashboard_data_user(data, user_email):
     query = {
         "folderIds": _get_folder_id(user_email)
     }
-    r = get('http' + tls + '://' + gf_endpoint + '/api/search', auth=basicAuth(gf_admin_user, gf_admin_pw), params=query)
+    r = get(gf_endpoint + '/api/search', auth=basicAuth(gf_admin_user, gf_admin_pw), params=query)
     if not r.ok:
         return []
     dashboards = r.json()
@@ -376,7 +377,7 @@ def _get_dashboard_data_monitoring_id(data, user_email, monitoring_id):
         "tag": monitoring_id,
         "folderIds": _get_folder_id(user_email)
     }
-    r = get('http' + tls + '://' + gf_endpoint + '/api/search', auth=basicAuth(gf_admin_user, gf_admin_pw), params=query)
+    r = get(gf_endpoint + '/api/search', auth=basicAuth(gf_admin_user, gf_admin_pw), params=query)
     if not r.ok:
         return []
     dashboards = r.json()
