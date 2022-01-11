@@ -11,14 +11,16 @@ from uuid import uuid4
 env = Environment(loader=PackageLoader("app"), autoescape=False)
 app = Flask(__name__)
 gf_endpoint = getenv("GF_ADDRESS", "grafana") + ':' + getenv("GF_PORT", "3000")
+gf_tls = "s" if getenv("GF_TLS", "") else ""
+gf_endpoint = gf_endpoint if gf_endpoint.startswith('http') else 'http' + gf_tls + '://' + gf_endpoint
 gf_admin_user = getenv("GF_ADMIN_USER", "admin")
 gf_admin_pw = getenv("GF_ADMIN_PW", "admin")
 prom_endpoint = getenv("PROMETHEUS_ADDRESS", "prometheus") + ":" + getenv("PROMETHEUS_PORT", "9090")
+prom_tls = "s" if getenv("PROM_TLS", "") else ""
+prom_endpoint = prom_endpoint if prom_endpoint.startswith('http') else 'http' + prom_tls + '://' + prom_endpoint
 oidc_client_id = getenv("OIDC_CLIENT_ID", "sodalite-ide")
 oidc_client_secret = getenv("OIDC_CLIENT_SECRET", "")
 oidc_introspection_endpoint = getenv("OIDC_INTROSPECTION_ENDPOINT", "")
-tls = "s" if getenv("GF_TLS", "") else ""
-gf_endpoint = gf_endpoint if gf_endpoint.startswith('http') else 'http' + tls + '://' + gf_endpoint
 
 session = Session()
 adapter = adapters.HTTPAdapter(pool_connections=100, pool_maxsize=100)
@@ -246,7 +248,7 @@ def _metric_exists(exp_type, monitoring_id):
         query = urlencode({
             "query": metric + "{monitoring_id=\"" + monitoring_id + "\"}"
         })
-        prometheus_endpoint = "http://" + prom_endpoint + "/api/v1/query?" + query
+        prometheus_endpoint = prom_endpoint + "/api/v1/query?" + query
         prom_response = get(prometheus_endpoint)
         if prom_response.ok:
             json_prom = prom_response.json()
