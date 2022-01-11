@@ -6,6 +6,7 @@ from requests.auth import HTTPBasicAuth as basicAuth
 from jinja2 import Environment, PackageLoader
 from json import loads
 from urllib.parse import urlencode
+from uuid import uuid4
 
 env = Environment(loader=PackageLoader("app"), autoescape=False)
 app = Flask(__name__)
@@ -200,7 +201,7 @@ def _register_user(user_email, user_name):
                     "email": user_email,
                     "login": user_email,
                     "authLabels": ["OAuth"],
-                    "password": "nothing"
+                    "password": uuid4().hex
                     }).json()
         if "id" in r:
             return r["id"]
