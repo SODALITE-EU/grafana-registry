@@ -38,7 +38,7 @@ def create_dashboards():
         return "Unauthorized access\n", 401
 
     user_email = user_info['email']
-    user_name = user_info['name']
+    user_name = user_info['name'] if 'name' in user_info else user_email.split('@')[0]
     json_data = request.json
 
     if 'deployment_label' in json_data and 'monitoring_id' in json_data:
