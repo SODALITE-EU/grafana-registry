@@ -296,7 +296,6 @@ def _create_folder(email, user_id):
         post(gf_endpoint + '/api/folders/' + uid + '/permissions',
              auth=basicAuth(gf_admin_user, gf_admin_pw),
              json={"items": [{"userId": user_id, "permission": 1}]})
-
     elif r.status_code >= 400:
         folders = get(gf_endpoint + '/api/folders', auth=basicAuth(gf_admin_user, gf_admin_pw)).json()
         for folder in folders:
